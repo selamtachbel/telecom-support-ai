@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import axios from "axios";
-
 import {
   FaBolt,
   FaClock,
@@ -21,70 +20,88 @@ import {
   FaUser,
   FaWifi,
 } from "react-icons/fa";
-
 import "./App.css";
+
+const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://127.0.0.1:8000";
 
 function App() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // Auth & Modal States
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loginError, setLoginError] = useState("");
+
   const searchInputRef = useRef(null);
 
-const openChat = (suggestedQuestion = "") => {
-  if (suggestedQuestion) {
-    setQuestion(suggestedQuestion);
-  }
+  const openChat = (suggestedQuestion = "") => {
+    if (suggestedQuestion) {
+      setQuestion(suggestedQuestion);
+      askEnu(suggestedQuestion);
+    }
+    searchInputRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+    setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 400);
+  };
 
-  searchInputRef.current?.scrollIntoView({
-    behavior: "smooth",
-    block: "center",
-  });
+  const goToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
-  setTimeout(() => {
-    searchInputRef.current?.focus();
-  }, 500);
-};
-
-const goToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-};
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoginError("");
+    try {
+      const response = await axios.post(`${API_BASE_URL}/login`, {
+        username,
+        password,
+      });
+      if (response.data.success) {
+        setCurrentUser(response.data);
+        setShowLoginModal(false);
+        setPassword("");
+      }
+    } catch (err) {
+      setLoginError(err.response?.data?.detail || "Invalid credentials or backend unaccessible.");
+    }
+  };
 
   const askEnu = async (customQuestion = "") => {
-  const finalQuestion = (customQuestion || question).trim();
-
-  if (!finalQuestion) {
-    setAnswer("Please enter a question.");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setQuestion(finalQuestion);
-    setAnswer("");
-
-    const response = await axios.get(
-      "http://127.0.0.1:8000/search",
-      {
-        params: {
-          query: finalQuestion,
-        },
-      }
-    );
-
-    setAnswer(response.data.answer);
-  } catch (error) {
-    console.error("Search error:", error);
-
-    setAnswer(
-      "Unable to connect to the backend. Please make sure FastAPI is running."
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+    const finalQuestion = (customQuestion || question).trim();
+    if (!finalQuestion) {
+      setAnswer("Please enter a question.");
+      return;
+    }
+    try {
+      setLoading(true);
+      setErrorMsg("");
+      setQuestion(finalQuestion);
+      setAnswer("");
+      const response = await axios.get(`${API_BASE_URL}/search`, {
+        params: { query: finalQuestion },
+      });
+      setAnswer(response.data.answer);
+    } catch (error) {
+      console.error("Search error:", error);
+      setErrorMsg(
+        "Unable to connect to the backend. Please make sure FastAPI is running."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const popularQuestions = [
     {
@@ -118,30 +135,12 @@ const goToTop = () => {
   ];
 
   const services = [
-    {
-      icon: <FaUser />,
-      title: "Manage Account",
-    },
-    {
-      icon: <FaGift />,
-      title: "Buy Package",
-    },
-    {
-      icon: <FaSimCard />,
-      title: "Check Balance",
-    },
-    {
-      icon: <FaExchangeAlt />,
-      title: "Airtime Transfer",
-    },
-    {
-      icon: <FaFileInvoice />,
-      title: "View Bill",
-    },
-    {
-      icon: <FaCog />,
-      title: "More Services",
-    },
+    { icon: <FaUser />, title: "Manage Account", query: "How to manage my account?" },
+    { icon: <FaGift />, title: "Buy Package", query: "How do I buy a data package?" },
+    { icon: <FaSimCard />, title: "Check Balance", query: "How can I check my balance?" },
+    { icon: <FaExchangeAlt />, title: "Airtime Transfer", query: "How to transfer airtime?" },
+    { icon: <FaFileInvoice />, title: "View Bill", query: "How can I view my detailed bill?" },
+    { icon: <FaCog />, title: "More Services", query: "What other services are available?" },
   ];
 
   return (
@@ -151,109 +150,61 @@ const goToTop = () => {
           <div className="brand-icon">
             <FaRobot />
           </div>
-
           <div>
             <h1>Enu</h1>
             <p>AI Portal</p>
           </div>
         </div>
-
-       <nav className="menu">
-  <button
-    className="active"
-    onClick={() => openChat()}
-  >
-    <FaRobot />
-    <span>AI Chatbot</span>
-  </button>
-
-  <button onClick={goToTop}>
-    <FaHome />
-    <span>Dashboard</span>
-  </button>
-
-  <button
-    onClick={() =>
-      openChat("My internet is not working")
-    }
-  >
-    <FaWifi />
-    <span>Internet</span>
-  </button>
-
-  <button
-    onClick={() =>
-      openChat("My SIM card is not detected")
-    }
-  >
-    <FaSimCard />
-    <span>SIM Services</span>
-  </button>
-
-  <button
-    onClick={() =>
-      openChat("How do I check my bill?")
-    }
-  >
-    <FaCreditCard />
-    <span>Billing</span>
-  </button>
-
-  <button
-    onClick={() =>
-      openChat("I want to buy a data package")
-    }
-  >
-    <FaGift />
-    <span>Packages</span>
-  </button>
-
-  <button
-    onClick={() =>
-      openChat("I need customer support")
-    }
-  >
-    <FaHeadset />
-    <span>Support</span>
-  </button>
-</nav>
-
+        <nav className="menu">
+          <button className="active" onClick={() => openChat()}>
+            <FaRobot />
+            <span>AI Chatbot</span>
+          </button>
+          <button onClick={goToTop}>
+            <FaHome />
+            <span>Dashboard</span>
+          </button>
+          <button onClick={() => openChat("My internet is not working")}>
+            <FaWifi />
+            <span>Internet</span>
+          </button>
+          <button onClick={() => openChat("My SIM card is not detected")}>
+            <FaSimCard />
+            <span>SIM Services</span>
+          </button>
+          <button onClick={() => openChat("How do I check my bill?")}>
+            <FaCreditCard />
+            <span>Billing</span>
+          </button>
+          <button onClick={() => openChat("I want to buy a data package")}>
+            <FaGift />
+            <span>Packages</span>
+          </button>
+          <button onClick={() => openChat("I need customer support")}>
+            <FaHeadset />
+            <span>Support</span>
+          </button>
+        </nav>
         <div className="help-card">
           <h3>Need Help?</h3>
-
           <p>Call us 24/7 on</p>
-
           <div className="help-number">
             <FaPhoneAlt />
             <strong>994</strong>
           </div>
-
-          <button
-  onClick={() =>
-    openChat("How can I speak with a support agent?")
-  }
->
-  <FaHeadset />
-  Chat with Agent
-</button>
+          <button onClick={() => openChat("How can I speak with a support agent?")}>
+            <FaHeadset />
+            Chat with Agent
+          </button>
         </div>
-
         <div className="app-card">
           <h3>Get the My Ethiotel App</h3>
-
-          <p>
-            Manage your account, buy packages, pay
-            bills, and more.
-          </p>
-
+          <p>Manage your account, buy packages, pay bills, and more.</p>
           <div className="qr-box">
-            {Array.from({ length: 64 }).map(
-              (_, index) => (
-                <span key={index}></span>
-                )
-            )}
+            {Array.from({ length: 64 }).map((_, index) => (
+              <span key={index}></span>
+            ))}
           </div>
-
           <a href="#services">
             Learn More <span>→</span>
           </a>
@@ -265,240 +216,195 @@ const goToTop = () => {
             <span></span>
             Online
           </button>
-
           <div className="top-actions">
             <button>
               <FaGlobe />
               EN
             </button>
-
-            <button>
-              <FaUser />
-              Sign In / Register
-            </button>
+            {currentUser ? (
+              <button onClick={() => setCurrentUser(null)}>
+                <FaUser /> Log Out ({currentUser.username})
+              </button>
+            ) : (
+              <button onClick={() => setShowLoginModal(true)}>
+                <FaUser /> Sign In / Register
+              </button>
+            )}
           </div>
         </header>
+        
+        {showLoginModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Sign In</h2>
+              {loginError && <p className="error-text">{loginError}</p>}
+              <form onSubmit={handleLogin}>
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <div className="modal-actions">
+                  <button type="submit">Login</button>
+                  <button type="button" onClick={() => setShowLoginModal(false)}>Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         <section className="hero">
           <div className="hero-grid">
-
             <div className="hero-copy">
-
               <div className="enu-status">
                 <span></span>
                 Enu is online and ready to help
               </div>
-
-              <p className="greeting">
-                Hi there! 👋
-              </p>
-
+              <p className="greeting">Hi there! 👋</p>
               <h1>
                 I'm <span>Enu</span>
               </h1>
-
-              <h2>
-                Your AI Telecom Assistant
-              </h2>
-
+              <h2>Your AI Telecom Assistant</h2>
               <p className="description">
-                Smart telecom support for customers,
-                service desk agents and engineers.
-
-                Ask about internet, billing,
-                SIM services, packages,
-                troubleshooting and more.
-
-                Available 24 hours a day,
-                7 days a week.
+                Smart telecom support for customers, service desk agents and
+                engineers. Ask about internet, billing, SIM services, packages,
+                troubleshooting and more. Available 24 hours a day, 7 days a
+                week.
               </p>
-
               <div className="benefits">
-
                 <div>
                   <FaBolt />
                   Fast Responses
                 </div>
-
                 <div>
                   <FaShieldAlt />
                   Trusted Knowledge
                 </div>
-
                 <div>
                   <FaClock />
                   Available 24/7
                 </div>
-
               </div>
-
             </div>
-
             <div className="robot-side">
-
               <div className="robot-glow"></div>
-
               <div className="robot">
-
                 <div className="robot-antenna"></div>
-
                 <div className="robot-head">
-
                   <div className="robot-face">
-
                     <div className="robot-eye left"></div>
-
                     <div className="robot-eye right"></div>
-
                     <div className="robot-smile"></div>
-
                   </div>
-
                 </div>
-
                 <div className="robot-body"></div>
-
                 <div className="robot-base"></div>
-
               </div>
-
             </div>
-
           </div>
-
           <div className="search-box">
-
             <div className="search-avatar">
               <FaRobot />
             </div>
-
             <input
-            ref={searchInputRef}
+              ref={searchInputRef}
               type="text"
               placeholder="Ask anything about telecom support..."
               value={question}
-              onChange={(e) =>
-                setQuestion(e.target.value)
-              }
-              onKeyDown={(e) =>
-                e.key === "Enter" && askEnu()
-              }
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && askEnu()}
             />
-
             <FaMicrophone className="microphone" />
-
-            <button
-              onClick={() => askEnu()}
-              disabled={loading}
-            >
+            <button onClick={() => askEnu()} disabled={loading}>
               {loading ? "Thinking..." : "Ask Enu"}
-
               <FaPaperPlane />
             </button>
-
           </div>
-
           <p className="example">
-            Example:
-            My internet is slow.
-            What should I do?
+            Example: My internet is slow. What should I do?
           </p>
-
           <p className="warning">
             <FaShieldAlt />
-            Enu can make mistakes.
-            Verify important information.
+            Enu can make mistakes. Verify important information.
           </p>
-
         </section>
+        {errorMsg && (
+          <section className="answer-card error-card">
+            <p className="error-text">{errorMsg}</p>
+          </section>
+        )}
         {answer && (
           <section className="answer-card">
             <div className="answer-heading">
               <div>
                 <FaRobot />
               </div>
-
               <div>
                 <h3>Enu</h3>
-              
               </div>
             </div>
-
             <p className="answer-text">{answer}</p>
           </section>
         )}
-
         <section className="content-section">
-          <h2 className="section-title">
-            Popular Questions
-          </h2>
-
+          <h2 className="section-title">Popular Questions</h2>
           <div className="popular-grid">
             {popularQuestions.map((item, index) => (
               <button
                 key={index}
                 className={`popular-card ${item.color}`}
-                onClick={() => askEnu(item.query)}
+                onClick={() => openChat(item.query)}
               >
-                <div className="question-icon">
-                  {item.icon}
-                </div>
-
+                <div className="question-icon">{item.icon}</div>
                 <div>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
                 </div>
-
                 <strong>→</strong>
               </button>
             ))}
           </div>
         </section>
-
-        <section
-          className="content-section"
-          id="services"
-        >
-          <h2 className="section-title">
-            Featured Services
-          </h2>
-
+        <section className="content-section" id="services">
+          <h2 className="section-title">Featured Services</h2>
           <div className="service-grid">
             {services.map((service, index) => (
               <button
                 key={index}
                 className="service-card"
+                onClick={() => openChat(service.query)}
               >
                 <div>{service.icon}</div>
-
                 <span>{service.title}</span>
-
                 <strong>+</strong>
-              </button>
+                </button>
             ))}
           </div>
         </section>
-
         <footer className="footer">
           <p>
-            Powered by <strong>Enu AI</strong> |
-            Ethio Telecom Knowledge Assistant
+            Powered by <strong>Enu AI</strong> | Ethio Telecom Knowledge
+            Assistant
           </p>
-
           <p>
             <span>FastAPI</span>
             <span>React</span>
             <span>Artificial Intelligence</span>
           </p>
         </footer>
-
-       <button
-  className="floating-chat"
-  onClick={() => openChat()}
->
-  <FaRobot />
-  Chat with Enu
-</button>
+        <button className="floating-chat" onClick={() => openChat()}>
+          <FaRobot />
+          Chat with Enu
+        </button>
       </main>
     </div>
   );

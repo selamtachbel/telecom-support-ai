@@ -75,7 +75,6 @@ function EngineerPortal() {
             : "N/A",
         }))
         .filter((ticket) => ticket.status === "Escalated" || ticket.status === "In Progress");
-
       setTickets(formattedTickets);
     } catch (error) {
       console.error("Failed to fetch tickets:", error);
@@ -110,17 +109,14 @@ function EngineerPortal() {
       await axios.patch(`http://127.0.0.1:8000/tickets/${ticketId}`, {
         status: newStatus,
       });
-
       await loadTickets();
-
       if (selectedTicket && selectedTicket.id === ticketId) {
         if (newStatus === "Resolved" || newStatus === "Open") {
           setSelectedTicket(null);
-          } else {
+        } else {
           setSelectedTicket((prev) => ({ ...prev, status: newStatus }));
         }
       }
-
       showNotification(successMsg);
     } catch (error) {
       console.error("Error updating ticket:", error);
@@ -266,8 +262,8 @@ function EngineerPortal() {
                   }}
                 >
                   Open
-                  </button>
-              </td>
+                </button>
+                </td>
             </tr>
           ))}
         </tbody>
@@ -319,7 +315,6 @@ function EngineerPortal() {
           Logout
         </button>
       </aside>
-
       {/* MAIN CONTENT AREA */}
       <main className="engineer-main">
         {notification && (
@@ -381,7 +376,7 @@ function EngineerPortal() {
                       onChange={(e) => setSearchText(e.target.value)}
                     />
                   </div>
-                  </div>
+                </div>
                 {loading ? (
                   <p className="loading-text">Loading tickets...</p>
                 ) : (
@@ -395,7 +390,7 @@ function EngineerPortal() {
                   <span className="sub-heading">TICKET DETAILS</span>
                   <h2>
                     {selectedTicket
-                      ? `Ticket #${selectedTicket.id}`
+                      ? 'Ticket #${selectedTicket.id}'
                       : "Select a Ticket"}
                   </h2>
                 </div>
@@ -417,7 +412,7 @@ function EngineerPortal() {
                       <h3>Priority</h3>
                       <span className={`priority-badge priority-${selectedTicket.priority?.toLowerCase() || "low"}`}>
                         {selectedTicket.priority}
-                      </span>
+                        </span>
                     </div>
                     <div className="engineer-detail-card">
                       <h3>Status</h3>
@@ -480,7 +475,7 @@ function EngineerPortal() {
                   </div>
                 )}
               </aside>
-              </section>
+            </section>
           </>
         )}
 
@@ -521,7 +516,7 @@ function EngineerPortal() {
                   borderRadius: "8px",
                   color: "#fff",
                   fontSize: "14px",
-                }}
+                  }}
               />
             </div>
             <div className="engineer-card-grid">
