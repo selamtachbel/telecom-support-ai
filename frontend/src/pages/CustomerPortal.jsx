@@ -103,6 +103,29 @@ function CustomerPortal() {
       setLoading(false);
     }
   };
+  const submitFeedback = async (feedbackType) => {
+  if (!result) return;
+
+  try {
+    await axios.post("http://127.0.0.1:8000/feedback", {
+      question: question || result?.matched_question || "Unknown question",
+      answer: result?.answer || "",
+      category: result?.category || "General",
+      helpful: feedbackType,
+    });
+
+    if (feedbackType === "Helpful") {
+      alert("Thank you for your feedback!");
+    }
+
+    if (feedbackType === "Not Helpful") {
+      openTicketModal();
+    }
+  } catch (error) {
+    console.error("Feedback save failed:", error);
+    alert("Unable to save feedback. Please try again.");
+  }
+};
 
   const openTicketModal = () => {
     setTicketData({
@@ -433,16 +456,16 @@ function CustomerPortal() {
             </div>
             <div className="feedback-buttons">
               <button
-              type="button"
-                className="helpful-btn"
-                onClick={() => alert("Thank you for your feedback!")}
-              >
-                👍 Helpful
-              </button>
+               type="button"
+               className="helpful-btn"
+               onClick={() => submitFeedback("Helpful")}
+>
+               👍 Helpful
+            </button>
               <button
                 type="button"
                 className="not-helpful-btn"
-                onClick={openTicketModal}
+                onClick={() => submitFeedback("Not Helpful")}
               >
                 👎 Not Helpful
               </button>

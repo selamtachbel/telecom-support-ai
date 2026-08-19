@@ -73,3 +73,12 @@ class AISetting(Base):
     top_p = Column(Float, default=0.9)
     chunk_size = Column(Integer, default=500)
     chunk_overlap = Column(Integer, default=50)
+class Feedback(Base):
+    __tablename__ = "feedback"
+
+    id = Column(Integer, primary_key=True, index=True)
+    question = Column(Text, nullable=False)
+    answer = Column(Text, nullable=True)
+    category = Column(String(100), nullable=True)
+    helpful = Column(String(20), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)

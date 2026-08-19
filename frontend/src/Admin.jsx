@@ -48,7 +48,7 @@ function Admin() {
         await Promise.allSettled([
           axios.get("http://127.0.0.1:8000/dashboard/stats"),
           axios.get("http://127.0.0.1:8000/knowledge"),
-          axios.get("http://127.0.0.1:8000/feedback"),
+          axios.get("http://127.0.0.1:8000/feedback/stats"),
           axios.get("http://127.0.0.1:8000/users"),
           axios.get("http://127.0.0.1:8000/audit/logs"),
         ]);
@@ -59,12 +59,22 @@ function Admin() {
       if (knowledgeRes.status === "fulfilled" && Array.isArray(knowledgeRes.value?.data)) {
         setKnowledge(knowledgeRes.value.data);
       }
-      if (feedbackRes.status === "fulfilled" && Array.isArray(feedbackRes.value?.data)) {
-        setFeedback(feedbackRes.value.data);
-      }
-      if (usersRes.status === "fulfilled" && Array.isArray(usersRes.value?.data)) {
-        setUsers(usersRes.value.data);
-      } else {
+      if (feedbackRes.status === "fulfilled" && feedbackRes.value?.data) {
+  const feedbackData = feedbackRes.value.data;
+
+  setStats((prev) => ({
+    ...prev,
+    answer_accuracy: `${feedbackData.helpful_percentage}%`,
+  }));
+}
+
+if (
+  usersRes.status === "fulfilled" &&
+  Array.isArray(usersRes.value?.data)
+) {
+  setUsers(usersRes.value.data);
+}
+      else {
         setUsers([
           { id: 1, username: "admin_user", role: "Administrator", status: "Active" },
           { id: 2, username: "engineer_01", role: "Engineer", status: "Active" },

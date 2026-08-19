@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 import models
 from database import Base, engine, get_db
-from models import ChatHistory, KnowledgeBase, User, Ticket, SystemLog, AISetting
+from models import ChatHistory, KnowledgeBase, User, Ticket, SystemLog, AISetting,Feedback
 from rag_engine import ingest_document_text, query_rag
 
 # Configure logging
@@ -94,6 +94,67 @@ class AISettingsUpdate(BaseModel):
     top_p: float = 0.9
     chunk_size: int = 500
     chunk_overlap: int = 50
+class FeedbackRequest(BaseModel):
+    question: str
+    answer: Optional[str] = None
+    category: Optional[str] = None
+    helpful: str
+
+
+@app.post("/feedback")
+def create_feedback(
+    feedback: FeedbackRequest,
+    db: Session = Depends(get_db)
+):
+    new_feedback = Feedback(
+        question=feedback.question,
+        answer=feedback.answer,
+        category=feedback.category,
+        helpful=feedback.helpful,
+    )
+
+    db.add(new_feedback)
+    db.commit()
+    db.refresh(new_feedback)
+
+    return {
+        "message": "Feedback saved successfully",
+        "feedback": {
+            "id": new_feedback.id,
+            "question": new_feedback.question,
+            "answer": new_feedback.answer,
+            "category": new_feedback.category,
+            "helpful": new_feedback.helpful,
+        },
+    }
+@app.get("/feedback/stats")
+def get_feedback_stats(db: Session = Depends(get_db)):
+    total = db.query(Feedback).count()
+
+    helpful = (
+        db.query(Feedback)
+        .filter(Feedback.helpful == "Helpful")
+        .count()
+    )
+
+    not_helpful = (
+        db.query(Feedback)
+        .filter(Feedback.helpful == "Not Helpful")
+        .count()
+    )
+
+    helpful_percentage = (
+        round((helpful / total) * 100, 1)
+        if total > 0
+        else 0
+    )
+
+    return {
+        "total": total,
+        "helpful": helpful,
+        "not_helpful": not_helpful,
+        "helpful_percentage": helpful_percentage,
+    }
 
 # ------------------------------------------------------------------
 # Health & Auth Endpoints
