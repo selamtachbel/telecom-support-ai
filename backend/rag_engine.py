@@ -10,7 +10,7 @@ CHROMA_PATH = "chroma_db"
 
 # Initialize local embedding model & LLM
 embeddings = FastEmbedEmbeddings()
-llm = OllamaLLM(model="llama3")
+llm = OllamaLLM(model="llama3.2:3b")
 
 def get_vector_store():
     """Returns or creates the local ChromaDB vector store."""
