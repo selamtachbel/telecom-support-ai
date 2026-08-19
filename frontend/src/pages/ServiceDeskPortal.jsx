@@ -300,6 +300,36 @@ function ServiceDeskPortal() {
       setKnowledgeSearch("sim");
     }
   };
+  /* ===============================
+   RESOLVE TICKET
+=============================== */
+const handleResolveTicket = async () => {
+  if (!selectedTicket) {
+    showNotification("Please select a ticket first.");
+    return;
+  }
+
+  try {
+    await axios.patch(
+      `http://127.0.0.1:8000/tickets/${selectedTicket.id}`,
+      {
+        status: "Resolved",
+      }
+    );
+
+    await loadTickets();
+
+    setSelectedTicket({
+      ...selectedTicket,
+      status: "Resolved",
+    });
+
+    showNotification("Ticket resolved successfully.");
+  } catch (error) {
+    console.error("Failed to resolve ticket:", error);
+    showNotification("Unable to resolve ticket.");
+  }
+};
 
   /* =====================================
       CREATE NEW TICKET
@@ -593,19 +623,28 @@ function ServiceDeskPortal() {
                       </p>
                     </div>
                     <button
-                      type="button"
-                      className="service-assist-button"
-                      onClick={handleFindSolution}
-                    >
-                      ✨ Find Knowledge Solution
-                    </button>
-                    <button
-                      type="button"
-                      className="service-escalate-button"
-                      onClick={handleEscalateTicket}
-                    >
-                      🚨 Escalate Ticket
-                    </button>
+  type="button"
+  className="service-assist-button"
+  onClick={handleFindSolution}
+>
+  ✨ Find Knowledge Solution
+</button>
+
+<button
+  type="button"
+  className="service-assist-button"
+  onClick={handleResolveTicket}
+>
+  ✅ Resolve Ticket
+</button>
+
+<button
+  type="button"
+  className="service-escalate-button"
+  onClick={handleEscalateTicket}
+>
+  🚨 Escalate Ticket
+</button>
                   </div>
                 ) : (
                   <div className="service-detail-empty">
