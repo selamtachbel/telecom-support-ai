@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtual environment
+backend/venv/
+
+# Local runtime databases
+backend/chroma_db/
+backend/telecom_support.db
+
+# Frontend dependencies
+frontend/node_modules/
