@@ -19,21 +19,45 @@ def get_vector_store():
         embedding_function=embeddings
     )
 
-def ingest_document_text(text: str, filename: str, category: str):
+def ingest_document_text(
+    text: str,
+    filename: str,
+    category: str,
+    pages=None
+):
     """
     Chunks document text and inserts embeddings into ChromaDB.
+    Stores page metadata when available.
     """
-    # 1. Chunk the text into manageable pieces
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=500,
         chunk_overlap=50
     )
-    chunks = text_splitter.create_documents(
-        texts=[text],
-        metadatas=[{"source": filename, "category": category}]
-    )
-
-    # 2. Store chunks into ChromaDB
+    
+    if pages:
+        page_texts = []
+        page_metadata = []
+        for page_number, page_text in enumerate(pages, start=1):
+            if page_text.strip():
+                page_texts.append(page_text)
+                page_metadata.append({
+                    "source": filename,
+                    "category": category,
+                    "page": page_number
+                })
+        chunks = text_splitter.create_documents(
+            texts=page_texts,
+            metadatas=page_metadata
+        )
+    else:
+        chunks = text_splitter.create_documents(
+            texts=[text],
+            metadatas=[{
+                "source": filename,
+                "category": category
+            }]
+        )
+    
     vector_store = get_vector_store()
     vector_store.add_documents(chunks)
     return len(chunks)
@@ -43,7 +67,7 @@ def query_rag(question: str):
     Retrieves context from ChromaDB and generates an answer using Llama 3.
     """
     vector_store = get_vector_store()
-
+    
     # 1. Retrieve top 3 relevant chunks
     docs_and_scores = vector_store.similarity_search_with_relevance_scores(question, k=3)
     
@@ -52,12 +76,34 @@ def query_rag(question: str):
             "answer": "Sorry, I couldn't find relevant operational documentation for your request.",
             "source": None,
             "confidence": 0,
+            "category": "General",
             "found": False
         }
-
+        
     # 2. Extract retrieved text context and metadata
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in docs_and_scores])
-    sources = list(set([doc.metadata.get("source", "Unknown") for doc, _ in docs_and_scores]))
+    context_text = "\n\n---\n\n".join(
+        [doc.page_content for doc, _ in docs_and_scores]
+    )
+    
+    sources = []
+    categories = []
+    
+    # FIXED: Properly indented loop to collect sources & categories for ALL retrieved docs
+    for doc, _ in docs_and_scores:
+        source = doc.metadata.get("source", "Unknown")
+        category = doc.metadata.get("category", "General")
+        page = doc.metadata.get("page")
+        
+        if page:
+            citation = f"{source} — Page {page}"
+        else:
+            citation = source
+            
+        if citation not in sources:
+            sources.append(citation)
+        if category not in categories:
+            categories.append(category)
+
     top_score = round(docs_and_scores[0][1] * 100, 2)
 
     # 3. Create RAG Prompt
@@ -79,6 +125,7 @@ def query_rag(question: str):
     return {
         "answer": answer,
         "source": ", ".join(sources),
+        "category": ", ".join(categories),
         "confidence": top_score,
         "found": True
     }

@@ -1,5 +1,7 @@
 import os
 import logging
+import io
+from pypdf import PdfReader
 from typing import Optional, List
 from fastapi import Depends, FastAPI, HTTPException, UploadFile, File, Form, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,7 +9,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 import models
 from database import Base, engine, get_db
-from models import ChatHistory, KnowledgeBase, User, Ticket, SystemLog, AISetting,Feedback
+from models import ChatHistory, KnowledgeBase, User, Ticket, SystemLog, AISetting, Feedback
 from rag_engine import ingest_document_text, query_rag
 
 # Configure logging
@@ -94,12 +96,12 @@ class AISettingsUpdate(BaseModel):
     top_p: float = 0.9
     chunk_size: int = 500
     chunk_overlap: int = 50
+
 class FeedbackRequest(BaseModel):
     question: str
     answer: Optional[str] = None
     category: Optional[str] = None
     helpful: str
-
 
 @app.post("/feedback")
 def create_feedback(
@@ -112,11 +114,9 @@ def create_feedback(
         category=feedback.category,
         helpful=feedback.helpful,
     )
-
     db.add(new_feedback)
     db.commit()
     db.refresh(new_feedback)
-
     return {
         "message": "Feedback saved successfully",
         "feedback": {
@@ -127,28 +127,25 @@ def create_feedback(
             "helpful": new_feedback.helpful,
         },
     }
+
 @app.get("/feedback/stats")
 def get_feedback_stats(db: Session = Depends(get_db)):
     total = db.query(Feedback).count()
-
     helpful = (
         db.query(Feedback)
         .filter(Feedback.helpful == "Helpful")
         .count()
     )
-
     not_helpful = (
         db.query(Feedback)
         .filter(Feedback.helpful == "Not Helpful")
         .count()
     )
-
     helpful_percentage = (
         round((helpful / total) * 100, 1)
         if total > 0
         else 0
     )
-
     return {
         "total": total,
         "helpful": helpful,
@@ -288,7 +285,10 @@ def search(query: str, db: Session = Depends(get_db)):
             detail=f"Search failed: {str(e)}"
         )
 
+# Multiple routes added here to match any frontend path (//upload, /upload, /ingest)
 @app.post("/documents/upload")
+@app.post("/upload")
+@app.post("/ingest")
 async def upload_document(
     title: str = Form(...),
     category: str = Form("General"),
@@ -297,31 +297,74 @@ async def upload_document(
 ):
     try:
         content = await file.read()
-        text_content = content.decode("utf-8", errors="ignore")
+        filename = (file.filename or "").lower()
+
+        # PDF
+        if filename.endswith(".pdf"):
+            reader = PdfReader(io.BytesIO(content))
+
+            pdf_pages = [
+                page.extract_text() or ""
+                for page in reader.pages
+            ]
+
+            text_content = "\n".join(pdf_pages)
+
+        # TXT
+        elif filename.endswith(".txt"):
+            pdf_pages = None
+            text_content = content.decode(
+                "utf-8",
+                errors="ignore"
+            )
+
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only PDF and TXT files are supported."
+            )
+
         if not text_content.strip():
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Uploaded file is empty or unreadable."
             )
-        num_chunks = ingest_document_text(text_content, file.filename, category)
+
+        num_chunks = ingest_document_text(
+            text_content,
+            file.filename,
+            category,
+            pages=pdf_pages
+        )
+
         new_doc = KnowledgeBase(
             question=title.strip(),
             answer=text_content.strip()[:500],
             category=category.strip()
         )
         db.add(new_doc)
-        
-        log = SystemLog(action="DOCUMENT_UPLOAD", user="Admin", details=f"Uploaded {file.filename} into {category}")
+
+        log = SystemLog(
+            action="DOCUMENT_UPLOAD",
+            user="Admin",
+            details=f"Uploaded {file.filename} into knowledge base"
+        )
         db.add(log)
+
         db.commit()
-        
+
         return {
             "status": "success",
-            "message": f"Successfully ingested '{file.filename}' into ChromaDB across {num_chunks} vector chunks.",
+            "message": (
+                f"Successfully ingested '{file.filename}' "
+                f"into ChromaDB across {num_chunks} vector chunks."
+            ),
             "filename": file.filename
         }
+
     except HTTPException:
         raise
+
     except Exception as e:
         db.rollback()
         logger.error(f"Upload failed: {e}")
@@ -329,7 +372,6 @@ async def upload_document(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Upload failed: {str(e)}"
         )
-
 # ------------------------------------------------------------------
 # Knowledge Base CRUD Endpoints
 # ------------------------------------------------------------------
@@ -353,8 +395,7 @@ def add_knowledge(data: KnowledgeRequest, db: Session = Depends(get_db)):
         KnowledgeBase.question.ilike(data.question.strip())
     ).first()
     if existing:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
             detail="This question already exists.",
         )
     item = KnowledgeBase(
