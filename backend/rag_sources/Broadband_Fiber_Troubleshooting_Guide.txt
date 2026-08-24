@@ -1,0 +1,21 @@
+DOCUMENT ID: SOP-TEL-001
+TITLE: Fiber Broadband Connection Troubleshooting Guide
+TARGET AUDIENCE: Customer Support & Customers
+
+1. OVERVIEW
+This guide outlines standard steps to diagnose internet connectivity issues for FTTH (Fiber to the Home) services.
+
+2. SYMPTOM: RED "LOS" LIGHT ON ONT ROUTER
+- Description: A solid or flashing red Loss of Signal (LOS) indicator on the optical network terminal.
+- Probable Cause: Physical fiber patch cable disconnection, sharp bend in optical fiber, or regional fiber cut.
+- Action Steps:
+Step 1: Check the yellow optical patch cable connecting the wall outlet to the ONT green port. Ensure it is firmly clicked in.
+Step 2: Ensure the optical cable is not bent at an angle sharper than 90 degrees.
+Step 3: Power cycle the ONT unit by unplugging the power adapter for 30 seconds.
+Step 4: If the LOS indicator remains red, log an incident for Field Engineering to test optical power levels (target: -18 dBm to -25 dBm).
+
+3. SYMPTOM: SLOW SPEED / HIGH LATENCY OVER WI-FI
+- Action Steps:
+Step 1: Perform an Ethernet cable speed test directly connected to LAN Port 1.
+Step 2: If wired speed is normal, check Wi-Fi channel interference using 5 GHz band instead of 2.4 GHz.
+
