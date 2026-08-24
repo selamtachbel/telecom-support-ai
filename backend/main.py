@@ -43,21 +43,50 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Seed default admin user on launch
+#Seed admin user from environment variables on launch
+
 @app.on_event("startup")
 def startup_db_seed():
     db = next(get_db())
+
     try:
-        admin_user = db.query(User).filter(User.username == "admin").first()
+        admin_username = os.getenv("ADMIN_USERNAME")
+        admin_password = os.getenv("ADMIN_PASSWORD")
+
+        if not admin_username or not admin_password:
+            logger.warning(
+                "ADMIN_USERNAME or ADMIN_PASSWORD is not configured. "
+                "Skipping admin user creation."
+            )
+            return
+
+        admin_user = (
+            db.query(User)
+            .filter(User.username == admin_username)
+            .first()
+        )
+
         if not admin_user:
-            default_admin = User(username="admin", password="password123", role="Admin")
+            default_admin = User(
+                username=admin_username,
+                password=admin_password,
+                role="Admin"
+            )
+
             db.add(default_admin)
             db.commit()
-            logger.info("Created default admin user: admin / password123")
+
+            logger.info(
+                "Initial admin user created from environment variables."
+            )
+
     except Exception as e:
+        db.rollback()
         logger.error(f"Error seeding initial database user: {e}")
+
     finally:
         db.close()
+      
 
 # ------------------------------------------------------------------
 # Pydantic Schemas

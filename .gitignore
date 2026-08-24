@@ -9,11 +9,22 @@ backend/venv/
 # Local runtime databases
 backend/chroma_db/
 backend/telecom_support.db
+telecom_support.db
+
+# Environment variables / secrets
+.env
+.env.*
+backend/.env
+frontend/.env
+!.env.example
 
 # Frontend dependencies
-frontend/node_modules/n# Playwright test artifactsnfrontend/test-results/
-frontend/playwright-report/
-n# Playwright test artifactsnfrontend/test-results/
-frontend/playwright-report/
+frontend/node_modules/
+
+# Playwright test artifacts
 frontend/test-results/
 frontend/playwright-report/
+
+# OS/editor files
+.DS_Store
+Thumbs.db

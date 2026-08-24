@@ -5,12 +5,17 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_ollama import OllamaLLM
 
-# Folder to store ChromaDB vector databases locally
 CHROMA_PATH = "chroma_db"
 
-# Initialize local embedding model & LLM
 embeddings = FastEmbedEmbeddings()
-llm = OllamaLLM(model="llama3.2:3b")
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+
+llm = OllamaLLM(
+    model=OLLAMA_MODEL,
+    base_url=OLLAMA_BASE_URL
+)
 
 def get_vector_store():
     """Returns or creates the local ChromaDB vector store."""
