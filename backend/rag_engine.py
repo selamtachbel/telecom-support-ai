@@ -4,18 +4,33 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import FastEmbedEmbeddings
 from langchain_ollama import OllamaLLM
+from langchain_groq import ChatGroq
 
 CHROMA_PATH = "chroma_db"
 
 embeddings = FastEmbedEmbeddings()
 
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2:3b")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-llm = OllamaLLM(
-    model=OLLAMA_MODEL,
-    base_url=OLLAMA_BASE_URL
+if GROQ_API_KEY:
+    llm = ChatGroq(
+        model=os.getenv("GROQ_MODEL", "openai/gpt-oss-20b"),
+        temperature=0
 )
+else:
+    OLLAMA_BASE_URL = os.getenv(
+        "OLLAMA_BASE_URL",
+        "http://localhost:11434"
+    )
+    OLLAMA_MODEL = os.getenv(
+        "OLLAMA_MODEL",
+        "llama3.2:3b"
+    )
+
+    llm = OllamaLLM(
+        model=OLLAMA_MODEL,
+        base_url=OLLAMA_BASE_URL
+    )
 
 def get_vector_store():
     """Returns or creates the local ChromaDB vector store."""
@@ -124,8 +139,15 @@ def query_rag(question: str):
     Answer concisely with actionable troubleshooting steps:
     """
 
-    # 4. Generate answer with Ollama
-    answer = llm.invoke(prompt)
+    # 4. Generate answer with selected LLM
+    raw_answer = llm.invoke(prompt)
+
+   # Ollama returns text; Groq returns an AIMessage
+    answer = (
+    raw_answer.content
+    if hasattr(raw_answer, "content")
+    else str(raw_answer)
+)
 
     return {
         "answer": answer,
