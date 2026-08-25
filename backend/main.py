@@ -11,7 +11,7 @@ import models
 from database import Base, engine, get_db
 from models import ChatHistory, KnowledgeBase, User, Ticket, SystemLog, AISetting, Feedback
 from rag_engine import ingest_document_text, query_rag
-
+from difflib import SequenceMatcher
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("telecom_api")
@@ -277,63 +277,133 @@ def delete_user(user_id: int, db: Session = Depends(get_db)):
 @app.get("/search")
 def search(query: str, db: Session = Depends(get_db)):
     cleaned_query = query.strip()
+
     if not cleaned_query:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Please enter a question.",
         )
-    try:
-        rag_res = query_rag(cleaned_query)
-        answer_text = rag_res.get("answer", "")
-        if answer_text:
-            history = ChatHistory(question=cleaned_query, answer=answer_text)
-            db.add(history)
-            db.commit()
-            return {
-                "question": cleaned_query,
-                "answer": answer_text,
-                "confidence": rag_res.get("confidence", 85),
-                "source": rag_res.get("source", "RAG Vector Store"),
-                "found": rag_res.get("found", True),
-                "category": rag_res.get("category", "General"),
-                "suggestion": "If this does not solve your issue, create a support ticket.",
-            }
-    except Exception as rag_error:
-        logger.error(f"RAG engine error: {rag_error}. Falling back to SQLite database.")
 
     try:
-        kb_item = db.query(KnowledgeBase).filter(
-            KnowledgeBase.question.ilike(f"%{cleaned_query}%") |
-            KnowledgeBase.answer.ilike(f"%{cleaned_query}%")
-        ).first()
-        if kb_item:
-            answer_text = kb_item.answer
-            category_text = kb_item.category
-            found_status = True
-            confidence = 90
-        else:
-            answer_text = "Sorry, I couldn't find an answer in our database."
-            category_text = "General"
-            found_status = False
-            confidence = 0
-        history = ChatHistory(question=cleaned_query, answer=answer_text)
+        # -------------------------------------------------
+        # 1. SEARCH APPROVED SQLITE KNOWLEDGE BASE FIRST
+        # -------------------------------------------------
+        knowledge_items = db.query(KnowledgeBase).all()
+
+        best_item = None
+        best_score = 0.0
+
+        normalized_query = cleaned_query.lower()
+
+        for item in knowledge_items:
+            normalized_question = item.question.lower()
+
+            score = SequenceMatcher(
+                None,
+                normalized_query,
+                normalized_question
+            ).ratio()
+
+            if score > best_score:
+                best_score = score
+                best_item = item
+
+        # A reasonably similar approved question was found
+        if best_item and best_score >= 0.55:
+            answer_text = best_item.answer
+
+            history = ChatHistory(
+                question=cleaned_query,
+                answer=answer_text
+            )
+            db.add(history)
+            db.commit()
+
+            return {
+                "question": cleaned_query,
+                "matched_question": best_item.question,
+                "answer": answer_text,
+                "confidence": round(best_score * 100, 2),
+                "source": "Telecom Knowledge Base",
+                "found": True,
+                "category": best_item.category,
+                "suggestion": "If this does not solve your issue, create a support ticket.",
+            }
+
+        # -------------------------------------------------
+        # 2. IF KB HAS NO GOOD MATCH, USE RAG
+        # -------------------------------------------------
+        try:
+            rag_res = query_rag(cleaned_query)
+
+            answer_text = rag_res.get("answer", "")
+            rag_found = rag_res.get("found", False)
+            rag_confidence = rag_res.get("confidence", 0)
+
+            if answer_text and rag_found:
+                history = ChatHistory(
+                    question=cleaned_query,
+                    answer=answer_text
+                )
+                db.add(history)
+                db.commit()
+
+                return {
+                    "question": cleaned_query,
+                    "matched_question": cleaned_query,
+                    "answer": answer_text,
+                    "confidence": rag_confidence,
+                    "source": rag_res.get(
+                        "source",
+                        "RAG Vector Store"
+                    ),
+                    "found": True,
+                    "category": rag_res.get(
+                        "category",
+                        "General"
+                    ),
+                    "suggestion": "If this does not solve your issue, create a support ticket.",
+                }
+
+        except Exception as rag_error:
+            logger.error(f"RAG engine error: {rag_error}")
+
+        # -------------------------------------------------
+        # 3. NOTHING RELIABLE FOUND
+        # -------------------------------------------------
+        answer_text = (
+            "I'm sorry, but I couldn't find a reliable answer "
+            "for that question."
+        )
+
+        history = ChatHistory(
+            question=cleaned_query,
+            answer=answer_text
+        )
         db.add(history)
         db.commit()
+
         return {
             "question": cleaned_query,
+            "matched_question": None,
             "answer": answer_text,
-            "confidence": confidence,
-            "source": "Telecom Database",
-            "found": found_status,
-            "category": category_text,
-            "suggestion": "Verify that your backend RAG and Ollama services are active.",
+            "confidence": 0,
+            "source": "Telecom Support AI",
+            "found": False,
+            "category": "General",
+            "suggestion": "Please create a support ticket for further assistance.",
         }
+
+    except HTTPException:
+        raise
+
     except Exception as e:
         db.rollback()
         logger.error(f"Search failed completely: {e}")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Search failed: {str(e)}"
+            detail=f"Search failed: {str(e)}",
         )
 
 # Multiple routes added here to match any frontend path (//upload, /upload, /ingest)
