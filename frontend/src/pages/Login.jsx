@@ -24,9 +24,9 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const allowedRoleForPath = {
-  "/service-desk": "service_desk",
-  "/engineer": "engineer",
-  "/admin": "admin",
+  "/service-desk": "Service Desk",
+  "/engineer": "Network Engineer",
+  "/admin": "Admin",
 };
 
   const handleLogin = async (event) => {
