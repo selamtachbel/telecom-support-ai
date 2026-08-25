@@ -43,49 +43,69 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#Seed admin user from environment variables on launch
-
+# Seed staff users from environment variables on launch
 @app.on_event("startup")
 def startup_db_seed():
     db = next(get_db())
 
     try:
-        admin_username = os.getenv("ADMIN_USERNAME")
-        admin_password = os.getenv("ADMIN_PASSWORD")
+        users_to_seed = [
+            {
+                "username": os.getenv("ADMIN_USERNAME"),
+                "password": os.getenv("ADMIN_PASSWORD"),
+                "role": "Admin",
+            },
+            {
+                "username": os.getenv("SERVICEDESK_USERNAME", "servicedesk"),
+                "password": os.getenv("SERVICEDESK_PASSWORD"),
+                "role": "Service Desk",
+            },
+            {
+                "username": os.getenv("ENGINEER_USERNAME", "engineer"),
+                "password": os.getenv("ENGINEER_PASSWORD"),
+                "role": "Network Engineer",
+            },
+        ]
 
-        if not admin_username or not admin_password:
-            logger.warning(
-                "ADMIN_USERNAME or ADMIN_PASSWORD is not configured. "
-                "Skipping admin user creation."
+        for user_data in users_to_seed:
+            username = user_data["username"]
+            password = user_data["password"]
+
+            if not username or not password:
+                logger.warning(
+                    f"Skipping {user_data['role']} user creation because credentials are not configured."
+                )
+                continue
+
+            existing_user = (
+                db.query(User)
+                .filter(User.username == username)
+                .first()
             )
-            return
 
-        admin_user = (
-            db.query(User)
-            .filter(User.username == admin_username)
-            .first()
-        )
+            if not existing_user:
+                new_user = User(
+                    username=username,
+                    password=password,
+                    role=user_data["role"],
+                )
 
-        if not admin_user:
-            default_admin = User(
-                username=admin_username,
-                password=admin_password,
-                role="Admin"
-            )
+                db.add(new_user)
 
-            db.add(default_admin)
-            db.commit()
+                logger.info(
+                    f"Created initial {user_data['role']} user."
+                )
 
-            logger.info(
-                "Initial admin user created from environment variables."
-            )
+        db.commit()
 
     except Exception as e:
         db.rollback()
-        logger.error(f"Error seeding initial database user: {e}")
+        logger.error(f"Error seeding initial database users: {e}")
 
     finally:
         db.close()
+
+
       
 
 # ------------------------------------------------------------------
