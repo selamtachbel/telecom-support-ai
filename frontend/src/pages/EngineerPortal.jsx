@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./EngineerPortal.css";
+import { API_BASE_URL } from "../apiConfig";
 
 function EngineerPortal() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ function EngineerPortal() {
   const loadTickets = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/tickets");
+      const response = await axios.get(`${API_BASE_URL}/tickets`);
       const formattedTickets = response.data
         .map((ticket) => ({
           ...ticket,
@@ -106,9 +107,9 @@ function EngineerPortal() {
   ========================================= */
   const handleUpdateStatus = async (ticketId, newStatus, successMsg) => {
     try {
-      await axios.patch(`http://127.0.0.1:8000/tickets/${ticketId}`, {
+      await axios.patch(`${API_BASE_URL}/tickets/${ticketId}`, {
         status: newStatus,
-      });
+});
       await loadTickets();
       if (selectedTicket && selectedTicket.id === ticketId) {
         if (newStatus === "Resolved" || newStatus === "Open") {
