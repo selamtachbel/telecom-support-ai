@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./ServiceDeskPortal.css";
+import { API_BASE_URL } from "../apiConfig";
 
 function ServiceDeskPortal() {
   const navigate = useNavigate();
@@ -85,7 +86,7 @@ function ServiceDeskPortal() {
 
   const loadTickets = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/tickets");
+      const response = await axios.get(`${API_BASE_URL}/tickets`);
       const formattedTickets = response.data.map((ticket) => ({
         ...ticket,
         customer: ticket.customer_name || ticket.customer,
@@ -101,7 +102,7 @@ function ServiceDeskPortal() {
 
   const loadKnowledge = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/knowledge");
+      const response = await axios.get(`${API_BASE_URL}/knowledge`);
       setKnowledgeArticles(response.data);
     } catch (error) {
       console.error("Failed to load knowledge", error);
@@ -249,7 +250,7 @@ function ServiceDeskPortal() {
     try {
       // Send update to Backend database so it persists on page refresh
       await axios.patch(
-        `http://127.0.0.1:8000/tickets/${selectedTicket.id}`,
+        `${API_BASE_URL}/tickets/${selectedTicket.id}`,
         payload
       );
 
@@ -311,7 +312,7 @@ const handleResolveTicket = async () => {
 
   try {
     await axios.patch(
-      `http://127.0.0.1:8000/tickets/${selectedTicket.id}`,
+      `${API_BASE_URL}/tickets/${selectedTicket.id}`,
       {
         status: "Resolved",
       }
@@ -341,12 +342,13 @@ const handleResolveTicket = async () => {
       return;
     }
     try {
-      const response = await axios.post("http://127.0.0.1:8000/tickets", {
-        customer_name: newTicket.customer,
-        issue: newTicket.issue,
-        category: newTicket.category,
-        priority: newTicket.priority,
-      });
+      const response = await axios.post(`${API_BASE_URL}/tickets`, {
+         customer_name: newTicket.customer,
+         issue: newTicket.issue,
+         category: newTicket.category,
+          priority: newTicket.priority,
+});
+    
       await loadTickets();
       setNewTicket({
         customer: "",

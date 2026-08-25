@@ -22,6 +22,7 @@ import {
   FaWifi,
 } from "react-icons/fa";
 import "../App.css";
+import { API_BASE_URL } from "../apiConfig";
 
 function CustomerPortal() {
   const [question, setQuestion] = useState("");
@@ -80,7 +81,7 @@ function CustomerPortal() {
       setQuestion(finalQuestion);
       setResult(null);
 
-      const response = await axios.get("http://127.0.0.1:8000/search", {
+      const response = await axios.get(`${API_BASE_URL}/search`, {
         params: {
           query: finalQuestion,
         },
@@ -91,7 +92,7 @@ function CustomerPortal() {
       console.error(error);
       setResult({
         answer:
-          "Unable to connect to the backend. Please make sure FastAPI is running on http://127.0.0.1:8000.",
+             "Unable to connect to the support service. Please try again.",
         category: "Connection Error",
         source: "Frontend",
         confidence: 0,
@@ -107,7 +108,7 @@ function CustomerPortal() {
   if (!result) return;
 
   try {
-    await axios.post("http://127.0.0.1:8000/feedback", {
+     await axios.post(`${API_BASE_URL}/feedback`, {
       question: question || result?.matched_question || "Unknown question",
       answer: result?.answer || "",
       category: result?.category || "General",
@@ -145,7 +146,7 @@ function CustomerPortal() {
     }
     try {
       setTicketLoading(true);
-      await axios.post("http://127.0.0.1:8000/tickets", ticketData);
+        await axios.post(`${API_BASE_URL}/tickets`, ticketData);
       alert("Support ticket created successfully!");
       setShowTicketModal(false);
       setTicketData({

@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../apiConfig";
 import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
+
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,8 +41,7 @@ function Login() {
       setLoading(true);
       setError("");
 
-      const response = await axios.post(
-        "http://127.0.0.1:8000/login",
+      const response = await axios.post(`${API_BASE_URL}/login`, 
         {
           username: username.trim(),
           password,
