@@ -25,6 +25,7 @@ function EngineerPortal() {
   const [searchText, setSearchText] = useState("");
   const [kbSearch, setKbSearch] = useState("");
   const [loading, setLoading] = useState(false);
+  const [allTickets, setAllTickets] = useState([]);
 
   /* =========================================
       KNOWLEDGE BASE ARTICLES
@@ -67,16 +68,29 @@ function EngineerPortal() {
     setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/tickets`);
-      const formattedTickets = response.data
-        .map((ticket) => ({
-          ...ticket,
-          customer: ticket.customer_name || ticket.customer || "Unknown Customer",
-          time: ticket.created_at
-            ? new Date(ticket.created_at).toLocaleString()
-            : "N/A",
-        }))
-        .filter((ticket) => ticket.status === "Escalated" || ticket.status === "In Progress");
-      setTickets(formattedTickets);
+      const formattedTickets = response.data.map((ticket) => ({
+  ...ticket,
+  customer:
+    ticket.customer_name ||
+    ticket.customer ||
+    "Unknown Customer",
+  time: ticket.created_at
+    ? new Date(ticket.created_at).toLocaleString()
+    : "N/A",
+}));
+
+// Keep ALL tickets for reports
+setAllTickets(formattedTickets);
+
+// Only active escalations appear in Engineer queue
+const activeTickets = formattedTickets.filter(
+  (ticket) =>
+    ticket.status === "Escalated" ||
+    ticket.status === "In Progress"
+);
+
+setTickets(activeTickets);
+       
     } catch (error) {
       console.error("Failed to fetch tickets:", error);
       showNotification("Failed to load tickets from backend.");
@@ -158,6 +172,28 @@ function EngineerPortal() {
       icon: "👷",
     },
   ];
+  const formattedTickets = response.data.map((ticket) => ({
+  ...ticket,
+  customer:
+    ticket.customer_name ||
+    ticket.customer ||
+    "Unknown Customer",
+  time: ticket.created_at
+    ? new Date(ticket.created_at).toLocaleString()
+    : "N/A",
+}));
+
+// Keep ALL tickets for reports
+setAllTickets(formattedTickets);
+
+// Only active escalations appear in Engineer queue
+const activeTickets = formattedTickets.filter(
+  (ticket) =>
+    ticket.status === "Escalated" ||
+    ticket.status === "In Progress"
+);
+
+setTickets(activeTickets);
 
   /* =========================================
       SEARCH
@@ -569,7 +605,7 @@ function EngineerPortal() {
         {activeSection === "reports" && (
           <section className="engineer-section-page">
             <div className="engineer-stats">
-              {stats.map((stat) => (
+              {reportStats.map((stat) => (
                 <div key={stat.label} className="engineer-stat-card">
                   <div className="stat-header">
                     <span className="stat-icon">{stat.icon}</span>
