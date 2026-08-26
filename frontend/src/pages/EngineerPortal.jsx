@@ -26,6 +26,41 @@ function EngineerPortal() {
   const [kbSearch, setKbSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [allTickets, setAllTickets] = useState([]);
+  const [diagnosticResult, setDiagnosticResult] = useState(null);
+  const [diagnosticLoading, setDiagnosticLoading] = useState(false);
+
+
+  const handleRunDiagnostics = async () => {
+  if (!selectedTicket) {
+    showNotification("Please select a ticket first.");
+    return;
+  }
+
+  setDiagnosticLoading(true);
+
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/diagnostics`,
+      {
+        issue:
+          selectedTicket.issue ||
+          selectedTicket.description ||
+          "Unknown telecom issue",
+        ticket_id: selectedTicket.id,
+      }
+    );
+
+    setDiagnosticResult(response.data);
+    setActiveSection("diagnostics");
+
+    showNotification("Diagnostics completed successfully.");
+  } catch (error) {
+    console.error("Diagnostic error:", error);
+    showNotification("Failed to run diagnostics.");
+  } finally {
+    setDiagnosticLoading(false);
+  }
+};
 
   /* =========================================
       KNOWLEDGE BASE ARTICLES
@@ -496,37 +531,41 @@ function EngineerPortal() {
                     </div>
                     <div className="engineer-action-buttons">
                       <button
-                        className="engineer-primary-btn"
-                        onClick={() =>
-                          handleUpdateStatus(
-                            selectedTicket.id,
-                            "In Progress",
-                            "Investigation started."
-                          )
-                        }
-                      >
-                        🔍 Start Investigation
-                      </button>
-                      <button
-                        className="engineer-primary-btn"
-                        onClick={() =>
-                          showNotification("Running network diagnostics...")
-                        }
-                      >
-                        🌐 Run Diagnostics
-                      </button>
-                      <button
-                        className="engineer-success-btn"
-                        onClick={() =>
-                          handleUpdateStatus(
-                            selectedTicket.id,
-                            "Resolved",
-                            "Ticket resolved successfully."
-                          )
-                        }
-                      >
-                        ✅ Resolve Ticket
-                      </button>
+  className="engineer-primary-btn"
+  onClick={() =>
+    handleUpdateStatus(
+      selectedTicket.id,
+      "In Progress",
+      "Investigation started."
+    )
+  }
+>
+  🔍 Start Investigation
+</button>
+
+<button
+  className="engineer-primary-btn"
+  onClick={handleRunDiagnostics}
+  disabled={diagnosticLoading}
+>
+  {diagnosticLoading ? "🔄 Running..." : "🌐 Run Diagnostics"}
+</button>
+
+<button
+  className="engineer-success-btn"
+  onClick={() =>
+    handleUpdateStatus(
+      selectedTicket.id,
+      "Resolved",
+      "Ticket resolved successfully."
+    )
+  }
+>
+  ✅ Resolve Ticket
+</button>
+                      
+                        
+                    
                       <button
                         className="engineer-warning-btn"
                         onClick={() =>

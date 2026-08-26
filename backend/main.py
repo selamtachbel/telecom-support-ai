@@ -153,6 +153,9 @@ class FeedbackRequest(BaseModel):
     answer: Optional[str] = None
     category: Optional[str] = None
     helpful: str
+class DiagnosticRequest(BaseModel):
+    issue: str
+    ticket_id: int | None = None
 
 @app.post("/feedback")
 def create_feedback(
@@ -701,3 +704,49 @@ def update_ticket(
     db.commit()
     db.refresh(ticket)
     return ticket
+@app.post("/diagnostics")
+def run_diagnostics(data: DiagnosticRequest):
+    issue = data.issue.lower().strip()
+
+    result = {
+        "ticket_id": data.ticket_id,
+        "network_status": "Operational",
+        "signal_strength": "Good",
+        "sim_registration": "Registered",
+        "fiber_status": "No outage detected",
+        "probable_cause": "No major network fault detected",
+        "recommendation": "Continue standard troubleshooting.",
+        "escalation_required": False,
+    }
+
+    if "sim" in issue:
+        result["sim_registration"] = "Registration check required"
+        result["probable_cause"] = "Possible SIM seating or registration issue"
+        result["recommendation"] = (
+            "Reinsert the SIM, restart the device, and verify network registration."
+        )
+
+    elif "internet" in issue or "data" in issue:
+        result["signal_strength"] = "Check required"
+        result["probable_cause"] = "Possible coverage, APN, or data configuration issue"
+        result["recommendation"] = (
+            "Verify signal strength, mobile data settings, APN configuration, "
+            "and package availability."
+        )
+
+    elif "fiber" in issue or "broadband" in issue:
+        result["fiber_status"] = "Investigation required"
+        result["probable_cause"] = "Possible customer-side or access-network fault"
+        result["recommendation"] = (
+            "Check router status, optical indicators, cabling, and access-network status."
+        )
+        result["escalation_required"] = True
+
+    elif "slow" in issue:
+        result["signal_strength"] = "Degraded"
+        result["probable_cause"] = "Possible congestion or weak signal"
+        result["recommendation"] = (
+            "Check signal quality, congestion indicators, and customer device/network settings."
+        )
+
+    return result
