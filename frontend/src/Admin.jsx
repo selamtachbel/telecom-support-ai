@@ -45,26 +45,29 @@ function Admin() {
       setLoading(true);
       setError("");
 
-      const [
-        statsRes,
-        KnowledgeRes,
-        feedbackRes,
-        usersRes,
-        logsRes,
-        aiSettingsRes,
-    ] = await Promise.allSettled([
-        axios.get(`${API_BASE_URL}/dashboard/stats`),
-        axios.get(`${API_BASE_URL}/knowledge`),
-        axios.get(`${API_BASE_URL}/feedback/stats`),
-        axios.get(`${API_BASE_URL}/users`),
-        axios.get(`${API_BASE_URL}/audit/logs`),
-        axios.get(`${API_BASE_URL}/settings/ai`),
+   const [
+    statsRes,
+    knowledgeRes,
+    feedbackRes,
+    usersRes,
+    logsRes,
+    aiSettingsRes,
+]   = await Promise.allSettled([
+    axios.get(`${API_BASE_URL}/dashboard/stats`),
+    axios.get(`${API_BASE_URL}/knowledge`),
+    axios.get(`${API_BASE_URL}/feedback/stats`),
+    axios.get(`${API_BASE_URL}/users`),
+    axios.get(`${API_BASE_URL}/audit/logs`),
+    axios.get(`${API_BASE_URL}/settings/ai`),
 ]);
 
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {
         setStats((prev) => ({ ...prev, ...statsRes.value.data }));
       }
-      if (knowledgeRes.status === "fulfilled" && Array.isArray(knowledgeRes.value?.data)) {
+      if (
+        knowledgeRes.status === "fulfilled" && 
+         Array.isArray(knowledgeRes.value?.data))
+          {
         setKnowledge(knowledgeRes.value.data);
       }
       if (feedbackRes.status === "fulfilled" && feedbackRes.value?.data) {
