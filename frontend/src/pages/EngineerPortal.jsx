@@ -648,36 +648,79 @@ function EngineerPortal() {
         )}
 
         {/* 4. DIAGNOSTICS PAGE */}
-        {activeSection === "diagnostics" && (
-          <section className="engineer-section-page">
-            <div className="engineer-card-grid">
-              <div className="engineer-card">
-                <h3>🌐 Network Status</h3>
-                <p className="status-good">Operational</p>
-              </div>
-              <div className="engineer-card">
-                <h3>📡 Fiber Network</h3>
-                <p className="status-good">No Fiber Outage Detected</p>
-              </div>
-              <div className="engineer-card">
-                <h3>📱 SIM Registration</h3>
-                <p className="status-good">SIM Successfully Registered</p>
-              </div>
-              <div className="engineer-card">
-                <h3>📶 Signal Strength</h3>
-                <p className="status-good">Excellent (98%)</p>
-              </div>
-              <div className="engineer-card">
-                <h3>📍 Base Station</h3>
-                <p>Addis Ababa BTS-104</p>
-              </div>
-              <div className="engineer-card">
-                <h3>💻 Core Network</h3>
-                <p className="status-good">Healthy</p>
-              </div>
-            </div>
-          </section>
-        )}
+{activeSection === "diagnostics" && (
+  <section className="engineer-section-page">
+    <div className="section-title-bar">
+      <div>
+        <span className="sub-heading">NETWORK DIAGNOSTICS</span>
+        <h2>Diagnostic Results</h2>
+        <p>
+          Run diagnostic decision-support checks for the selected telecom ticket.
+        </p>
+      </div>
+    </div>
+
+    {!diagnosticResult ? (
+      <div className="engineer-card">
+        <h3>🌐 No Diagnostic Run Yet</h3>
+        <p>
+          Select an escalated ticket and click Run Diagnostics to analyze the issue.
+        </p>
+      </div>
+    ) : (
+      <>
+        <div className="engineer-card-grid">
+          <div className="engineer-card">
+            <h3>🌐 Network Status</h3>
+            <p className="status-good">
+              {diagnosticResult.network_status}
+            </p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>📶 Signal Strength</h3>
+            <p>{diagnosticResult.signal_strength}</p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>📱 SIM Registration</h3>
+            <p>{diagnosticResult.sim_registration}</p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>🛜 Fiber Network</h3>
+            <p>{diagnosticResult.fiber_status}</p>
+          </div>
+        </div>
+
+        <div className="engineer-card-grid">
+          <div className="engineer-card">
+            <h3>🔎 Probable Cause</h3>
+            <p>{diagnosticResult.probable_cause}</p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>🛠 Recommended Action</h3>
+            <p>{diagnosticResult.recommendation}</p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>🚨 Escalation Required</h3>
+            <p>
+              {diagnosticResult.escalation_required ? "Yes" : "No"}
+            </p>
+          </div>
+
+          <div className="engineer-card">
+            <h3>🎫 Ticket</h3>
+            <p>#{diagnosticResult.ticket_id || "N/A"}</p>
+          </div>
+        </div>
+      </>
+    )}
+  </section>
+)}
+             
 
         {/* 5. REPORTS PAGE */}
         {activeSection === "reports" && (
