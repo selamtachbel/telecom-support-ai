@@ -176,6 +176,61 @@ function EngineerPortal() {
       icon: "👷",
     },
   ];
+  const reportStats = [
+  {
+    label: "Total Tickets",
+    value: allTickets.length,
+    sub: "All Tickets",
+    icon: "🎫",
+  },
+  {
+    label: "Escalated",
+    value: allTickets.filter(
+      (ticket) => ticket.status === "Escalated"
+    ).length,
+    sub: "Engineer Escalations",
+    icon: "🚨",
+  },
+  {
+    label: "In Progress",
+    value: allTickets.filter(
+      (ticket) => ticket.status === "In Progress"
+    ).length,
+    sub: "Under Investigation",
+    icon: "🔍",
+  },
+  {
+    label: "Resolved",
+    value: allTickets.filter(
+      (ticket) => ticket.status === "Resolved"
+    ).length,
+    sub: "Completed Tickets",
+    icon: "✅",
+  },
+  {
+    label: "High Priority",
+    value: allTickets.filter(
+      (ticket) => ticket.priority?.toLowerCase() === "high"
+    ).length,
+    sub: "Urgent Cases",
+    icon: "🔥",
+  },
+  {
+    label: "Resolution Rate",
+    value:
+      allTickets.length > 0
+        ? `${Math.round(
+            (allTickets.filter(
+              (ticket) => ticket.status === "Resolved"
+            ).length /
+              allTickets.length) *
+              100
+          )}%`
+        : "0%",
+    sub: "Resolved / Total",
+    icon: "📊",
+  },
+];
   
 
 
