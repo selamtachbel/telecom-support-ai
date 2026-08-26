@@ -65,38 +65,42 @@ function EngineerPortal() {
   }, []);
 
   const loadTickets = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_BASE_URL}/tickets`);
-      const formattedTickets = response.data.map((ticket) => ({
-  ...ticket,
-  customer:
-    ticket.customer_name ||
-    ticket.customer ||
-    "Unknown Customer",
-  time: ticket.created_at
-    ? new Date(ticket.created_at).toLocaleString()
-    : "N/A",
-}));
+  setLoading(true);
 
-// Keep ALL tickets for reports
-setAllTickets(formattedTickets);
+  try {
+    const response = await axios.get(`${API_BASE_URL}/tickets`);
 
-// Only active escalations appear in Engineer queue
-const activeTickets = formattedTickets.filter(
-  (ticket) =>
-    ticket.status === "Escalated" ||
-    ticket.status === "In Progress"
-);
+    const formattedTickets = response.data.map((ticket) => ({
+      ...ticket,
+      customer:
+        ticket.customer_name ||
+        ticket.customer ||
+        "Unknown Customer",
+      time: ticket.created_at
+        ? new Date(ticket.created_at).toLocaleString()
+        : "N/A",
+    }));
 
-setTickets(activeTickets);
-       
-    } catch (error) {
-      console.error("Failed to fetch tickets:", error);
-      showNotification("Failed to load tickets from backend.");
-    }
-    setLoading(false);
-  };
+    // Keep all tickets for Reports
+    setAllTickets(formattedTickets);
+
+    // Engineer queue shows only active escalations
+    const activeTickets = formattedTickets.filter(
+      (ticket) =>
+        ticket.status === "Escalated" ||
+        ticket.status === "In Progress"
+    );
+
+    setTickets(activeTickets);
+  } catch (error) {
+    console.error("Failed to fetch tickets:", error);
+    showNotification("Failed to load tickets from backend.");
+  }
+
+  setLoading(false);
+};
+
+  
 
   /* =========================================
       NOTIFICATION
@@ -174,17 +178,6 @@ setTickets(activeTickets);
   ];
   
 
-// Keep ALL tickets for reports
-setAllTickets(formattedTickets);
-
-// Only active escalations appear in Engineer queue
-const activeTickets = formattedTickets.filter(
-  (ticket) =>
-    ticket.status === "Escalated" ||
-    ticket.status === "In Progress"
-);
-
-setTickets(activeTickets);
 
   /* =========================================
       SEARCH
