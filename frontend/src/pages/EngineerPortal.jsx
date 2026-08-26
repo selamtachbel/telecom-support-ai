@@ -172,16 +172,7 @@ setTickets(activeTickets);
       icon: "👷",
     },
   ];
-  const formattedTickets = response.data.map((ticket) => ({
-  ...ticket,
-  customer:
-    ticket.customer_name ||
-    ticket.customer ||
-    "Unknown Customer",
-  time: ticket.created_at
-    ? new Date(ticket.created_at).toLocaleString()
-    : "N/A",
-}));
+  
 
 // Keep ALL tickets for reports
 setAllTickets(formattedTickets);
