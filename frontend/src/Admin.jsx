@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "./apiConfig";
 
 function Admin() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -44,14 +45,20 @@ function Admin() {
       setLoading(true);
       setError("");
 
-      const [statsRes, knowledgeRes, feedbackRes, usersRes, logsRes] =
-        await Promise.allSettled([
-          axios.get("http://127.0.0.1:8000/dashboard/stats"),
-          axios.get("http://127.0.0.1:8000/knowledge"),
-          axios.get("http://127.0.0.1:8000/feedback/stats"),
-          axios.get("http://127.0.0.1:8000/users"),
-          axios.get("http://127.0.0.1:8000/audit/logs"),
-        ]);
+      const [
+        statsRes,
+        feedbackRes,
+        usersRes,
+        logsRes,
+        aiSettingsRes,
+    ] = await Promise.allSettled([
+        axios.get(`${API_BASE_URL}/dashboard/stats`),
+        axios.get(`${API_BASE_URL}/knowledge`),
+        axios.get(`${API_BASE_URL}/feedback/stats`),
+        axios.get(`${API_BASE_URL}/users`),
+        axios.get(`${API_BASE_URL}/audit/logs`),
+        axios.get(`${API_BASE_URL}/settings/ai`),
+]);
 
       if (statsRes.status === "fulfilled" && statsRes.value?.data) {
         setStats((prev) => ({ ...prev, ...statsRes.value.data }));
@@ -89,12 +96,24 @@ if (
           { id: 2, timestamp: new Date().toLocaleString(), action: "QUERY_EXECUTE", user: "system", details: "Processed RAG search on category Broadband" },
         ]);
       }
+      if (
+        aiSettingsRes.status === "fulfilled" &&
+        aiSettingsRes.value?.data
+)  {
+        const settings = aiSettingsRes.value.data;
+
+       setAiModel(settings.model_name ?? "llama3");
+       setAiTemp(Number(settings.temperature ?? 0.7));
+       setChunkSize(Number(settings.chunk_size ?? 500));
+}
+
     } catch (err) {
       console.error("Dashboard loading error:", err);
       setError("Unable to connect to backend server. Running in offline fallback mode.");
     } finally {
       setLoading(false);
     }
+    
   };
 
   useEffect(() => {
@@ -110,9 +129,8 @@ if (
     formData.append("category", docCategory);
     try {
       setUploading(true);
-      await axios.post("http://127.0.0.1:8000/documents/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      await axios.post(`${API_BASE_URL}/documents/upload`, formData);
+      
       alert("Telecom document uploaded successfully!");
       setShowUploadModal(false);
       setDocTitle("");
@@ -127,18 +145,26 @@ if (
   };
 
   const handleSaveAISettings = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://127.0.0.1:8000/settings/ai", {
-        model: aiModel,
-        temperature: aiTemp,
-        chunk_size: chunkSize,
-      });
-      alert("AI & Model settings saved!");
-    } catch {
-      alert("AI Settings updated locally.");
-    }
-  };
+  e.preventDefault();
+
+  try {
+    await axios.post(`${API_BASE_URL}/settings/ai`, {
+      model_name: aiModel,
+      temperature: Number(aiTemp),
+      top_p: 0.9,
+      chunk_size: Number(chunkSize),
+      chunk_overlap: 50,
+    });
+
+    await loadDashboard();
+    alert("AI & Model settings saved successfully!");
+  } catch (error) {
+    console.error("AI settings save error:", error);
+    alert("Failed to save AI settings.");
+  }
+};
+
+  
 
   const safeKnowledge = Array.isArray(knowledge) ? knowledge : [];
 
