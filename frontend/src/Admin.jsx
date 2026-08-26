@@ -47,6 +47,7 @@ function Admin() {
 
       const [
         statsRes,
+        KnowledgeRes,
         feedbackRes,
         usersRes,
         logsRes,
