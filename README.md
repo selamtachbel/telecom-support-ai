@@ -1,209 +1,360 @@
-# Telecom Support AI
+# Telecom Support Knowledge Assistant
 
-Telecom Support AI is a full-stack, AI-assisted telecom support and knowledge management system developed as an MSSE Capstone project.
+## MSSE Capstone Project
 
-The application follows a realistic telecom support workflow:
+The **Telecom Support Knowledge Assistant** is an AI-powered telecom support platform developed as an individual Master of Software Engineering capstone project.
 
-Customer → Service Desk → Site Engineer
+The system is designed to support telecom customers, Service Desk agents, network engineers, and administrators through a unified support workflow.
 
-Customers can search for solutions using the Enu AI Telecom Assistant and create support tickets when an issue cannot be resolved. Service Desk agents can review and troubleshoot customer incidents, search the knowledge base, and escalate unresolved technical problems to Site Engineers.
+The application combines a telecom knowledge base, AI-assisted question answering, ticket management, escalation workflows, network diagnostics, analytics, and administrative tools.
 
-## Project Objective
+---
 
-The goal of this project is to improve telecom customer support by combining:
+## Live Application
 
-- AI-assisted knowledge retrieval
-- Telecom troubleshooting information
-- Customer ticket management
-- Service Desk operations
-- Technical escalation
-- Site Engineer support
-- Role-based portals
-- Knowledge management
-- Reporting and analytics
+### Frontend
+https://telecom-support-ai-frontend.onrender.com
 
-## Main Workflow
+### Backend API
+https://telecom-support-ai-api.onrender.com
 
-Customer → Enu AI Assistant → Service Desk → Site Engineer → Resolved
+### API Documentation
+https://telecom-support-ai-api.onrender.com/docs
 
-## User Roles
+---
 
-### Customer
-- Ask Enu telecom support questions
-- Search common telecom issues
-- View recommended solutions
-- Create support tickets when troubleshooting does not solve the issue
+## Project Objectives
 
-### Service Desk Agent
-- View incoming customer tickets
-- Search and filter tickets
-- Review ticket details
-- Search the telecom knowledge base
-- Troubleshoot customer issues
-- Resolve supported incidents
-- Escalate unresolved incidents to Site Engineers
+The project aims to improve telecom customer and technical support by:
 
-### Site Engineer
-- View escalated technical incidents
-- Review incident details
-- Start technical investigation
-- Perform network diagnostics
-- Resolve escalated incidents
+- Providing customers with fast answers to common telecom questions
+- Using a knowledge-based AI assistant to support troubleshooting
+- Allowing Service Desk agents to create and manage support tickets
+- Supporting escalation of complex incidents to network engineers
+- Providing engineers with diagnostic and resolution tools
+- Giving administrators visibility into users, knowledge, telemetry, AI configuration, and system activity
+- Maintaining support information in a structured knowledge base
 
-### Administrator
-- Manage telecom knowledge articles
-- Add, update, and delete knowledge records
-- Upload support documentation
-- View system statistics
+---
+
+## AI Assistant
+
+The telecom AI assistant is named **Enu**.
+
+Enu uses a Retrieval-Augmented Generation (RAG) approach to retrieve relevant telecom knowledge before generating an answer.
+
+Customer responses can include:
+
+- Answer
+- Category
+- Confidence
+- Knowledge source
+- Matched question
+- Knowledge status
+- Suggested next action
+- Helpful / Not Helpful feedback
+
+---
+
+## User Portals
+
+### Customer Portal
+
+The Customer Portal provides self-service telecom support.
+
+Features include:
+
+- AI chatbot with Enu
+- Internet troubleshooting
+- SIM support
+- Billing information
+- Package information
+- Balance and telecom service guidance
+- Customer support tickets
+- Helpful / Not Helpful feedback
+- Telecom service shortcuts
+
+---
+
+### Service Desk Portal
+
+The Service Desk Portal is designed for support agents.
+
+Features include:
+
+- Support dashboard
+- Ticket creation
+- Active ticket queue
+- Ticket search
+- Ticket details
+- Priority and status management
+- Knowledge Base access
+- AI-assisted support
+- Ticket escalation
+- Service Desk reports
+
+---
+
+### Engineer Portal
+
+The Engineer Portal supports advanced technical troubleshooting.
+
+Features include:
+
+- Engineering operations dashboard
+- Escalated ticket queue
+- In-progress ticket management
+- Knowledge Base access
+- Network diagnostics
+- Probable-cause analysis
+- Recommended technical actions
+- Ticket resolution
+- Engineering reports
+
+---
+
+### Admin Portal
+
+The Admin Portal provides system administration and monitoring.
+
+Features include:
+
+- System overview
+- User management
+- Knowledge/document management
+- Telemetry and analytics
+- AI model settings
+- Document upload
+- Feedback statistics
+- System logs and audit history
+
+---
+
+## Ticket Workflow
+
+The application supports the following ticket lifecycle:
+
+Customer / Service Desk
+
+↓
+
+Open Ticket
+
+↓
+
+Service Desk Investigation
+
+↓
+
+Escalated
+
+↓
+
+Engineer Review
+
+↓
+
+In Progress
+
+↓
+
+Diagnostics and Troubleshooting
+
+↓
+
+Resolved
+
+Ticket information is stored in the backend database and can be retrieved again after the application is refreshed or the user logs back in.
+
+---
+
+## Network Diagnostics
+
+Engineers can run diagnostics for support tickets.
+
+Diagnostic results may include:
+
+- Network status
+- Signal strength
+- SIM registration status
+- Fiber/network status
+- Probable cause
+- Recommended action
+- Escalation requirement
+
+---
+
+## Knowledge Base
+
+The Knowledge Base stores approved telecom support information used by both employees and the AI assistant.
+
+Administrators can:
+
+- Add knowledge
+- Edit knowledge
+- Delete knowledge
+- Upload support documents
+
+Service Desk agents and engineers can search the knowledge base while troubleshooting incidents.
+
+---
 
 ## Technology Stack
 
 ### Frontend
+
 - React
 - Vite
 - JavaScript
-- Axios
-- React Router
+- HTML
 - CSS
+- Axios
+- React Icons
 
 ### Backend
+
 - Python
 - FastAPI
 - SQLAlchemy
-- Pydantic
-- Uvicorn
+- REST API
 
 ### Database
+
 - SQLite
 
-### AI / Knowledge Retrieval
-- Retrieval-Augmented Generation (RAG)
-- ChromaDB
-- Ollama
+### AI / RAG
+
+- Retrieval-Augmented Generation
 - Telecom Knowledge Base
+- Groq-hosted language model integration
 
-## Main Features
+### Deployment
 
-- AI-assisted telecom support
-- Telecom knowledge search
-- Knowledge Base CRUD operations
-- Customer Portal
-- Service Desk Portal
-- Site Engineer Portal
-- Administrator Portal
-- Role-based login
-- Support ticket creation
-- Ticket queue
-- Ticket status tracking
-- Ticket escalation
-- Network diagnostics
-- Chat history
-- Dashboard statistics
-- Reports and analytics
-- RAG-powered search
+- Render
+- GitHub
 
-## Backend API
+---
 
-- GET /
-- GET /health
-- POST /login
-- GET /search
-- GET /knowledge
-- GET /knowledge/{id}
-- POST /knowledge
-- PUT /knowledge/{id}
-- DELETE /knowledge/{id}
-- POST /documents/upload
-- GET /tickets
-- POST /tickets
-- PATCH /tickets/{ticket_id}
-- GET /chat-history
-- DELETE /chat-history
-- GET /dashboard/stats
+## System Architecture
 
-FastAPI API documentation:
+```text
+                   Telecom Support Platform
+                            |
+             +--------------+--------------+
+             |                             |
+        React Frontend                FastAPI Backend
+             |                             |
+   +---------+---------+           +-------+--------+
+   |         |         |           |                |
+Customer  Service    Engineer    REST API        AI / RAG
+Portal     Desk       Portal        |                |
+   |         |         |        SQLAlchemy     Knowledge Base
+   +---------+---------+            |
+             |                    SQLite
+             |
+         Admin Portal
+```
 
-http://127.0.0.1:8000/docs
+---
 
-## Running the Project Locally
+## Important API Endpoints
 
-### Backend
-cd backend
-uvicorn main:app --reload
+Examples of backend endpoints include:
 
-### Frontend
+```text
+GET    /health
+GET    /search
+GET    /tickets
+POST   /tickets
+PATCH  /tickets/{ticket_id}
 
-Open another terminal:
-cd frontend
-npm install
-npm run dev
+GET    /knowledge
 
-Frontend usually runs at:
+POST   /diagnostics
 
-http://localhost:5173
+GET    /dashboard/stats
+GET    /analytics/telemetry
 
-## Agile Development
+GET    /settings/ai
+POST   /settings/ai
 
-### Sprint 1 — Foundation and Setup
-- Project structure
-- React frontend setup
-- FastAPI backend setup
-- Database setup
-- Initial authentication
-- Initial portal interfaces
+GET    /audit/logs
+```
 
-### Sprint 2 — Knowledge Management
-- Telecom Knowledge Base
-- Knowledge CRUD functionality
-- Document ingestion
-- Knowledge search
-- Vector database integration
+Full API documentation is available through the deployed FastAPI Swagger interface.
 
-### Sprint 3 — AI and Retrieval
-- Enu AI Assistant
-- RAG integration
-- Telecom question answering
-- Chat history
-- Confidence and source information
-
-### Sprint 4 — Ticketing, Escalation and Final Integration
-- Customer ticket creation
-- Service Desk ticket management
-- Site Engineer escalation
-- Engineering workflow
-- Reports
-- Testing
-- Deployment preparation
+---
 
 ## Testing
 
-Testing includes or will include:
+The system was tested across the complete telecom support workflow, including:
 
-- API endpoint testing
-- Knowledge search testing
-- Authentication testing
-- Ticket creation testing
-- Ticket status update testing
-- Ticket escalation testing
-- Database persistence testing
-- Customer Portal testing
-- Service Desk Portal testing
-- Site Engineer Portal testing
-- User acceptance testing
+- Customer AI knowledge queries
+- Ticket creation and persistence
+- Service Desk ticket management
+- Ticket escalation to engineers
+- Engineer ticket retrieval
+- Network diagnostics
+- Ticket resolution
+- Knowledge Base operations
+- Admin analytics and telemetry
+- AI configuration
+- Document upload
+- Audit logging
+
+---
 
 ## Deployment
 
-Live Application: Coming soon
+Both the frontend and backend are deployed to Render.
+
+The frontend communicates with the deployed FastAPI backend using a centralized API configuration:
+
+```javascript
+API_BASE_URL
+```
+
+This allows the application components to communicate with the deployed cloud API instead of relying on localhost addresses.
+
+---
+
+## Future Improvements
+
+Future enhancements may include:
+
+- PostgreSQL production database
+- Advanced role-based authentication
+- Amharic language support
+- Integration with real telecom network APIs
+- SMS and email notifications
+- Expanded AI knowledge sources
+- Advanced AI evaluation
+- Predictive incident classification
+- Expanded analytics dashboards
+
+---
+
+## Capstone
+
+This project was developed as an individual **Master of Software Engineering (MSSE) Capstone Project**.
+
+It demonstrates the integration of:
+
+- Software engineering
+- Full-stack web development
+- REST API design
+- Database management
+- Artificial intelligence
+- Retrieval-Augmented Generation
+- Cloud deployment
+- Testing
+- User-centered system design
+
+---
 
 ## Author
 
-Selam Tachbel
+**Selam Tachbel Bekele**
 
-Master of Science in Software Engineering  
+Master of Software Engineering (MSSE) Capstone Project  
 Quantic School of Business and Technology
-
-## Project Status
-
-🚧 Active Development
-
-Core customer support, knowledge management, Service Desk, ticketing, and engineering functionality have been implemented. Remaining work focuses on end-to-end workflow validation, automated testing, CI/CD, deployment, documentation, and the final Capstone demonstration.
