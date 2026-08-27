@@ -1049,3 +1049,66 @@
     gap: 7px;
   }
 }
+/* =========================================================
+   LANDING PAGE - LOGIN / SECURITY LABELS
+   ========================================================= */
+
+.workspace-card-bottom {
+  position: absolute;
+  left: 24px;
+  bottom: 18px;
+  right: 24px;
+
+  display: flex;
+  align-items: center;
+}
+
+.workspace-security {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: #8296a9;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.workspace-security svg {
+  font-size: 10px;
+}
+
+.workspace-card.green .workspace-security {
+  color: #74dfbd;
+}
+
+.workspace-card.blue .workspace-security {
+  color: #79bfff;
+}
+
+.workspace-card.purple .workspace-security {
+  color: #c59aff;
+}
+
+.workspace-security.customer-access {
+  color: #50dff5;
+}
+
+.workspace-enter p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.workspace-enter p svg {
+  font-size: 10px;
+}

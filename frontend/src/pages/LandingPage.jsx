@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   FaUser,
@@ -7,74 +7,98 @@ import {
   FaUserShield,
   FaArrowRight,
   FaCircle,
+  FaLock,
 } from "react-icons/fa";
 import "./LandingPage.css";
 
 function LandingPage() {
   const navigate = useNavigate();
+
   const [selectedRole, setSelectedRole] = useState("customer");
 
-  const workspaces = [
+  const portals = [
     {
       id: "customer",
       number: "01",
       title: "Customer Portal",
       description:
-        "Get help, ask Enu, create support requests and find telecom solutions tailored for you.",
+        "Get help from Enu, access telecom services, troubleshoot common issues and create support requests.",
+      path: "/customer",
       icon: <FaUser />,
-      route: "/customer",
       color: "cyan",
+      requiresLogin: false,
     },
     {
       id: "service",
       number: "02",
-      title: "Service Desk",
+      title: "IT Service Desk",
       description:
-        "Resolve tickets, manage incidents, search knowledge and support customers.",
+        "Manage tickets, search telecom knowledge, assist customers and escalate complex support incidents.",
+      path: "/service-desk",
       icon: <FaHeadset />,
-      route: "/service-desk",
       color: "green",
+      requiresLogin: true,
     },
     {
       id: "engineer",
       number: "03",
-      title: "Engineer Operations",
+      title: "Network Engineer",
       description:
-        "Access escalated incidents, diagnostics, technical knowledge and engineering tools.",
+        "Investigate escalated incidents, run diagnostics, access technical knowledge and resolve network issues.",
+      path: "/engineer",
       icon: <FaTools />,
-      route: "/engineer",
       color: "blue",
+      requiresLogin: true,
     },
     {
       id: "admin",
       number: "04",
-      title: "Administrator Portal",
+      title: "Administrator",
       description:
-        "Manage users, knowledge, analytics, AI settings and platform administration.",
+        "Manage users, knowledge, analytics, AI configuration, documents and system audit activity.",
+      path: "/admin",
       icon: <FaUserShield />,
-      route: "/admin",
       color: "purple",
+      requiresLogin: true,
     },
   ];
 
-  const selectedWorkspace = workspaces.find(
-    (workspace) => workspace.id === selectedRole
+  const selectedPortal = portals.find(
+    (portal) => portal.id === selectedRole
   );
 
-  const enterWorkspace = () => {
-    if (selectedWorkspace) {
-      navigate(selectedWorkspace.route);
+  /*
+    IMPORTANT:
+    Customer opens directly.
+    Service Desk, Engineer and Admin go through Login first.
+
+    This restores the exact behavior from your old working version.
+  */
+  const openPortal = (portal) => {
+    if (!portal) return;
+
+    if (portal.path === "/customer") {
+      navigate("/customer");
+      return;
     }
+
+    navigate("/login", {
+      state: {
+        requestedPath: portal.path,
+        requestedTitle: portal.title,
+      },
+    });
   };
 
   return (
     <div className="landing-page">
-      {/* Decorative background */}
+      {/* Decorative Background */}
       <div className="landing-grid"></div>
+
       <div className="landing-glow landing-glow-one"></div>
       <div className="landing-glow landing-glow-two"></div>
 
-      {/* Telecom decoration */}
+      {/* Telecom Tower Decoration */}
       <div className="telecom-decoration">
         <div className="signal-ring ring-one"></div>
         <div className="signal-ring ring-two"></div>
@@ -88,7 +112,7 @@ function LandingPage() {
         </div>
       </div>
 
-      {/* Globe decoration */}
+      {/* Network Globe */}
       <div className="network-globe">
         <div className="globe-ring globe-ring-one"></div>
         <div className="globe-ring globe-ring-two"></div>
@@ -118,8 +142,9 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* Hero */}
+      {/* Main Content */}
       <main className="landing-content">
+        {/* Hero */}
         <section className="landing-hero">
           <p className="landing-eyebrow">
             AI-POWERED TELECOM SUPPORT PLATFORM
@@ -131,86 +156,112 @@ function LandingPage() {
           </h1>
 
           <p className="landing-description">
-            A centralized intelligent support platform for customers,
-            IT service desk agents, network engineers and administrators.
+            A centralized intelligent support platform connecting
+            customers, IT service desk agents, network engineers
+            and administrators through one AI-powered telecom
+            support ecosystem.
           </p>
         </section>
 
+        {/* Workspace Selection */}
         <section className="workspace-section">
           <div className="workspace-heading">
             <span></span>
 
             <div>
               <p>CHOOSE YOUR WORKSPACE</p>
+
               <h2>Select Your Role</h2>
+
               <small>
-                Each workspace provides support tools and information
-                designed for its users.
+                Choose the workspace designed for your support role.
               </small>
             </div>
 
             <span></span>
           </div>
 
+          {/* Cards */}
           <div className="workspace-grid">
-            {workspaces.map((workspace) => (
+            {portals.map((portal) => (
               <button
                 type="button"
-                key={workspace.id}
-                className={`workspace-card ${workspace.color} ${
-                  selectedRole === workspace.id ? "selected" : ""
+                key={portal.id}
+                className={`workspace-card ${portal.color} ${
+                  selectedRole === portal.id ? "selected" : ""
                 }`}
-                onClick={() => setSelectedRole(workspace.id)}
-                onDoubleClick={() => navigate(workspace.route)}
+                onClick={() => setSelectedRole(portal.id)}
               >
                 <div className="workspace-card-top">
                   <span className="workspace-number">
-                    {workspace.number}
+                    {portal.number}
                   </span>
 
                   <span className="workspace-icon">
-                    {workspace.icon}
+                    {portal.icon}
                   </span>
                 </div>
 
-                <h3>{workspace.title}</h3>
+                <h3>{portal.title}</h3>
 
                 <div className="workspace-line"></div>
 
-                <p>{workspace.description}</p>
+                <p>{portal.description}</p>
 
-                <span className="workspace-select">
-                  {selectedRole === workspace.id
-                    ? "Selected"
-                    : "Select workspace"}
-                </span>
+                <div className="workspace-card-bottom">
+                  {portal.requiresLogin ? (
+                    <span className="workspace-security">
+                      <FaLock />
+                      Secure Login Required
+                    </span>
+                  ) : (
+                    <span className="workspace-security customer-access">
+                      Direct Customer Access
+                    </span>
+                  )}
+                </div>
               </button>
             ))}
           </div>
 
+          {/* Enter Selected Portal */}
           <div className="workspace-enter">
             <button
               type="button"
               className="enter-workspace-button"
-              onClick={enterWorkspace}
+              onClick={() => openPortal(selectedPortal)}
             >
               <span className="enter-arrow">
                 <FaArrowRight />
               </span>
 
-              Enter {selectedWorkspace?.title}
+              Enter {selectedPortal?.title}
             </button>
 
-            <p>
-              Secure. Intelligent. <span>Always Connected.</span>
-            </p>
+            {selectedPortal?.requiresLogin ? (
+              <p>
+                <FaLock /> Username and password required for{" "}
+                <span>{selectedPortal.title}</span>
+              </p>
+            ) : (
+              <p>
+                Customer access is available{" "}
+                <span>without employee login.</span>
+              </p>
+            )}
           </div>
         </section>
       </main>
 
+      {/* Footer */}
       <footer className="landing-footer">
-        <span>Enu Telecom Support Knowledge Assistant</span>
-        <span>AI • RAG • Service Operations • Network Support</span>
+        <span>
+          © 2026 Enu Telecom Support Knowledge Assistant
+        </span>
+
+        <span>
+          Secure • Intelligent • Always Connected
+        </span>
       </footer>
     </div>
   );
