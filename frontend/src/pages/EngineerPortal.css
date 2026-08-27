@@ -1183,3 +1183,348 @@
   color: #6e7681;
   font-size: 12px;
 }
+/* =========================================================
+   FINAL ENU ENGINEER PORTAL - LANDING PAGE STYLE
+   ========================================================= */
+
+.engineer-page {
+  background:
+    radial-gradient(circle at 85% 5%, rgba(0, 174, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 35% 90%, rgba(16, 220, 170, 0.08), transparent 30%),
+    linear-gradient(135deg, #020713 0%, #06101d 48%, #020814 100%);
+}
+
+/* subtle tech grid */
+.engineer-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.11;
+  background-image:
+    linear-gradient(rgba(36,149,214,.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36,149,214,.12) 1px, transparent 1px);
+  background-size: 65px 65px;
+}
+
+/* Sidebar */
+.engineer-sidebar {
+  position: relative;
+  z-index: 5;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(5,16,29,.97),
+      rgba(3,11,21,.96)
+    );
+  border-right: 1px solid rgba(74,192,229,.11);
+  box-shadow: 18px 0 55px rgba(0,0,0,.28);
+  backdrop-filter: blur(18px);
+}
+
+.engineer-brand {
+  padding-bottom: 26px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.engineer-brand-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  background:
+    linear-gradient(
+      145deg,
+      #17d8ba,
+      #0ba9ff 55%,
+      #176cff
+    );
+  box-shadow: 0 0 30px rgba(15,183,255,.28);
+}
+
+/* Navigation */
+.engineer-nav-item {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+}
+
+.engineer-nav-item:hover {
+  color: #fff;
+  background: rgba(255,255,255,.045);
+  transform: translateX(4px);
+}
+
+.engineer-nav-item.active {
+  color: #64edcf;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(27,225,181,.14),
+      rgba(0,158,255,.07)
+    );
+  border: 1px solid rgba(53,226,198,.22);
+  border-left: 3px solid #28dfbd;
+  box-shadow: 0 8px 22px rgba(0,0,0,.13);
+}
+
+/* User */
+.engineer-profile {
+  padding: 13px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.035);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.engineer-avatar {
+  background:
+    linear-gradient(
+      135deg,
+      #19d7bd,
+      #0b9eff
+    );
+  box-shadow: 0 8px 20px rgba(14,183,214,.22);
+}
+
+.engineer-logout {
+  border-radius: 12px;
+  background: rgba(239,68,68,.10);
+  border: 1px solid rgba(239,68,68,.18);
+  color: #ff9999;
+}
+
+/* Main */
+.engineer-main {
+  position: relative;
+  z-index: 2;
+  padding: 38px 42px;
+}
+
+/* Hero heading */
+.engineer-header h1 {
+  font-size: clamp(32px,4vw,48px);
+  letter-spacing: -1.5px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff,
+      #eaf8ff 38%,
+      #31d9e1 75%,
+      #38e2ac
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sub-heading {
+  color: #35e4cf;
+  letter-spacing: 2px;
+}
+
+.engineer-header p {
+  color: #8fa4b7;
+}
+
+/* Home */
+.engineer-home-btn {
+  border-radius: 12px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.09);
+}
+
+/* Stats */
+.engineer-stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 19px;
+  padding: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(13,36,55,.91),
+      rgba(5,18,32,.86)
+    );
+
+  border: 1px solid rgba(101,176,218,.13);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.22);
+
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.engineer-stat-card::before {
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  top: -70px;
+  right: -55px;
+  border-radius: 50%;
+  background: rgba(29,221,190,.10);
+}
+
+.engineer-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(46,226,199,.28);
+  box-shadow:
+    0 25px 50px rgba(0,0,0,.30),
+    0 0 26px rgba(38,216,198,.06);
+}
+
+.stat-icon {
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(30,217,195,.15),
+      rgba(12,158,255,.13)
+    );
+}
+
+/* Main panels */
+.engineer-ticket-section,
+.engineer-ticket-details,
+.engineer-card {
+  border-radius: 21px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(10,28,45,.90),
+      rgba(5,16,29,.84)
+    );
+
+  border: 1px solid rgba(113,172,207,.12);
+
+  box-shadow:
+    0 20px 50px rgba(0,0,0,.20);
+
+  backdrop-filter: blur(13px);
+}
+
+/* Search */
+.engineer-search input {
+  height: 45px;
+  border-radius: 13px;
+
+  background: rgba(255,255,255,.035);
+
+  border:
+    1px solid rgba(112,171,209,.12);
+}
+
+.engineer-search input:focus {
+  border-color: #2fdfc9;
+  box-shadow:
+    0 0 0 4px rgba(47,223,201,.08),
+    0 0 25px rgba(47,223,201,.08);
+}
+
+/* Table */
+.engineer-ticket-table th {
+  background: rgba(255,255,255,.035);
+  color: #74899c;
+}
+
+.engineer-ticket-table td {
+  color: #dce6ef;
+}
+
+.engineer-ticket-table tbody tr:hover {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(28,225,190,.06),
+      rgba(0,159,255,.03)
+    );
+}
+
+.engineer-open-button {
+  border-radius: 9px;
+  background:
+    linear-gradient(
+      135deg,
+      #18d9bd,
+      #0ca4f2
+    );
+  box-shadow: 0 7px 18px rgba(14,184,208,.18);
+}
+
+/* Details */
+.engineer-detail-card {
+  border-radius: 13px;
+  background: rgba(255,255,255,.028);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+/* Buttons */
+.engineer-primary-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #18d9bd,
+      #079fdb
+    );
+}
+
+.engineer-success-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #0a9fff,
+      #2563eb
+    );
+}
+
+.engineer-warning-btn {
+  background:
+    linear-gradient(
+      135deg,
+      #f7ad2c,
+      #db7708
+    );
+}
+
+.engineer-action-buttons button {
+  border-radius: 11px;
+}
+
+/* Knowledge / Diagnostics cards */
+.engineer-card {
+  transition:
+    transform .22s ease,
+    border-color .22s ease;
+}
+
+.engineer-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(45,222,200,.25);
+}
+
+.kb-badge {
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(22,210,177,.10);
+  color: #64e6c5;
+  border: 1px solid rgba(22,210,177,.18);
+}
+
+/* Notification */
+.engineer-notification {
+  border-radius: 13px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20,214,177,.15),
+      rgba(6,156,255,.08)
+    );
+  border: 1px solid rgba(44,220,193,.24);
+  color: #70efd0;
+}
