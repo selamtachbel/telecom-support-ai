@@ -32,7 +32,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run backend API tests
-        run: pytest -q
+        run: PYTHONPATH=. pytest -q
 
   frontend-tests:
     name: Frontend Tests and Build
