@@ -1,128 +1,108 @@
 # User Stories and Product Backlog
-## Telecom Support Knowledge Assistant — MSSE Capstone
 
-**Status date:** 17 August 2026
+## Telecom Support Knowledge Assistant - MSSE Capstone
 
-> The user-story wording and product backlog are based on the Capstone proposal. The status column is a working development tracker based on the current implementation and should be updated as features are completed and tested.
+**Status date:** 31 August 2026  
+**Scope model:** committed Capstone scope plus separately identified future enhancements
 
-## Status Legend
+## Status definitions
 
-- **Implemented** — core functionality is present and has been manually demonstrated.
-- **Partial** — some functionality exists, but required behavior, persistence, security, or validation remains.
-- **In Progress** — currently being actively completed.
-- **Pending** — not yet implemented or not yet validated.
+- **Done:** implemented in the submitted code and traceable to an interface/API.
+- **Validation:** implemented but final repeatable CI/UAT evidence is still being completed.
+- **To Do:** required submission-hardening work, not a new product feature.
+- **Future:** intentionally outside the committed Capstone prototype scope.
 
-## User Stories
+The online GitHub Project board should use the same scope and status. Do not leave committed work marked Partial or Pending when the implementation is complete. Do not mark a feature Done unless it can be demonstrated.
 
-| ID | Role | User Story | Status |
-|---|---|---|---|
-| US-001 | Customer | As a customer, I want to ask questions about telecom services so that I can resolve service-related issues quickly. | Implemented |
-| US-002 | Customer | As a customer, I want to check internet troubleshooting steps so that I can try to restore my connection before contacting support. | Implemented |
-| US-003 | Customer | As a customer, I want to understand billing charges so that I can verify my monthly telecom expenses. | Implemented |
-| US-004 | Customer | As a customer, I want to learn SIM activation procedures so that I can start using my service correctly. | Implemented |
-| US-005 | Customer | As a customer, I want to find package information so that I can choose the plan that fits my needs. | Implemented |
-| US-006 | Customer | As a customer, I want to receive service configuration guidance so that I can set up my telecom service properly. | Partial |
-| US-007 | Customer | As a customer, I want to receive answers in simple language so that I can understand technical information without specialist knowledge. | Implemented |
-| US-008 | Customer | As a customer, I want to view document references so that I can trust where the answer came from. | Partial |
-| US-009 | Customer | As a customer, I want to access support at any time so that I can get help when I need it. | Partial |
-| US-010 | Customer | As a customer, I want to rate answer quality so that the system can be improved over time. | Partial |
-| US-011 | Service Desk Agent | As a service desk agent, I want to search telecom procedures so that I can assist customers more efficiently. | Implemented |
-| US-012 | Service Desk Agent | As a service desk agent, I want to access troubleshooting guides so that I can follow approved support steps. | Partial |
-| US-013 | Service Desk Agent | As a service desk agent, I want to view escalation procedures so that I can route unresolved issues correctly. | Implemented |
-| US-014 | Service Desk Agent | As a service desk agent, I want to search multiple documents at the same time so that I can save time during support calls. | Partial |
-| US-015 | Service Desk Agent | As a service desk agent, I want to verify answers using citations so that I can provide reliable information to customers. | Partial |
-| US-016 | Service Desk Agent | As a service desk agent, I want to receive troubleshooting recommendations so that I can reduce issue resolution time. | Implemented |
-| US-017 | Service Desk Agent | As a service desk agent, I want to access activation procedures so that I can guide customers through service activation. | Partial |
-| US-018 | Service Desk Agent | As a service desk agent, I want to review frequently asked questions so that I can give consistent responses. | Implemented |
-| US-019 | Service Desk Agent | As a service desk agent, I want to view confidence scores so that I know when an answer may need additional verification. | Implemented |
-| US-020 | Service Desk Agent | As a service desk agent, I want to access service request workflows so that I can follow the correct process for each request. | Partial |
-| US-021 | Technical Support Engineer | As a technical support engineer, I want to access technical manuals so that I can diagnose technical issues accurately. | Partial |
-| US-022 | Technical Support Engineer | As a technical support engineer, I want to view known issue resolutions so that I can solve recurring incidents faster. | Partial |
-| US-023 | Technical Support Engineer | As a technical support engineer, I want to search network troubleshooting guides so that I can follow best practices during investigation. | Partial |
-| US-024 | Technical Support Engineer | As a technical support engineer, I want to access root cause analysis procedures so that I can investigate incidents systematically. | Partial |
-| US-025 | Technical Support Engineer | As a technical support engineer, I want to review maintenance procedures so that I can follow operational standards. | Partial |
-| US-026 | Technical Support Engineer | As a technical support engineer, I want to search configuration documentation so that I can verify technical settings. | Partial |
-| US-027 | Technical Support Engineer | As a technical support engineer, I want to verify recommendations using sources so that I can trust technical guidance. | Partial |
-| US-028 | Technical Support Engineer | As a technical support engineer, I want to access equipment documentation so that I can support device-related issues. | Partial |
-| US-029 | Technical Support Engineer | As a technical support engineer, I want to view operational standards so that my work remains aligned with company procedures. | Partial |
-| US-030 | Technical Support Engineer | As a technical support engineer, I want to review incident resolution history so that I can learn from previous cases. | Partial |
-| US-031 | Field Engineer | As a field engineer, I want to access installation guides so that I can complete installations correctly. | Partial |
-| US-032 | Field Engineer | As a field engineer, I want to access maintenance instructions so that I can perform maintenance tasks according to standards. | Partial |
-| US-033 | Field Engineer | As a field engineer, I want to use the system on mobile devices so that I can access information while working on site. | Partial |
-| US-034 | Field Engineer | As a field engineer, I want to view troubleshooting workflows so that I can resolve field issues more efficiently. | Partial |
-| US-035 | Field Engineer | As a field engineer, I want to access escalation guidance so that I know when to involve higher-level support. | Partial |
-| US-036 | Field Engineer | As a field engineer, I want to review equipment specifications so that I can work with the correct technical details. | Partial |
-| US-037 | Field Engineer | As a field engineer, I want to access network diagrams so that I can troubleshoot connectivity issues more effectively. | Pending |
-| US-038 | Field Engineer | As a field engineer, I want to review deployment procedures so that I can complete field deployments consistently. | Pending |
-| US-039 | Administrative Link | As an administrator, I want to upload telecom documents so that the knowledge base remains current. | Partial |
-| US-040 | Administrative Link | As an administrator, I want to update outdated documents so that users receive accurate information. | Partial |
-| US-041 | Administrator | As an administrator, I want to delete obsolete documents so that old information does not mislead users. | Implemented |
-| US-042 | Administrator | As an administrator, I want to manage user access so that the system remains secure. | Partial |
-| US-043 | Administrator | As an administrator, I want to manage user roles so that customers, employees, and administrators have appropriate permissions. | Partial |
-| US-044 | Administrator | As an administrator, I want to review analytics dashboards so that I can monitor system usage and performance. | Partial |
-| US-045 | Administrator | As an administrator, I want to review user feedback so that I can improve the quality of the knowledge base. | Pending |
-| US-046 | Administrator | As an administrator, I want to monitor answer accuracy so that I can evaluate whether the system is meeting expectations. | Pending |
-| US-047 | Administrator | As an administrator, I want to monitor response times so that I can identify performance issues. | Partial |
-| US-048 | Administrator | As an administrator, I want to export reports so that results can be shared with management or project reviewers. | Pending |
-| US-049 | Administrator | As an administrator, I want to identify common search topics so that documentation gaps can be addressed. | Pending |
-| US-050 | Administrator | As an administrator, I want to monitor system usage so that I can understand how different user groups use the assistant. | Partial |
+## Committed user stories
 
-## Product Backlog
+| ID | Role | User story | Status | Primary evidence |
+|---|---|---|---|---|
+| US-01 | Customer | Ask natural-language questions about telecom support. | Done | Customer portal, `GET /search` |
+| US-02 | Customer | Receive simple troubleshooting guidance for internet, SIM, billing, and packages. | Done | Curated knowledge and Enu UI |
+| US-03 | Customer | See category, confidence, source, and next action. | Done | Search response and answer card |
+| US-04 | Customer | Rate an answer Helpful or Not Helpful. | Done | `POST /feedback`, feedback UI |
+| US-05 | Customer | Create a support ticket when self-service is insufficient. | Done | Customer ticket modal, `POST /tickets` |
+| US-06 | Service Desk | View a persistent support-ticket queue and details. | Done | Service Desk portal, `GET /tickets` |
+| US-07 | Service Desk | Search approved knowledge during troubleshooting. | Done | Knowledge load/search UI |
+| US-08 | Service Desk | Create and resolve tickets. | Done | Ticket create/update actions |
+| US-09 | Service Desk | Escalate unresolved incidents to an engineer. | Done | Escalation form, `PATCH /tickets/{id}` |
+| US-10 | Service Desk | Review operational summaries/reports. | Done | Portal dashboard/report views |
+| US-11 | Engineer | View escalated and in-progress incidents. | Done | Engineer portal filters |
+| US-12 | Engineer | Run diagnostics and receive probable cause/recommended action. | Done | `POST /diagnostics`, diagnostics UI |
+| US-13 | Engineer | Move tickets through In Progress to Resolved. | Done | Engineer update actions |
+| US-14 | Engineer | Access knowledge while investigating. | Done | Engineer knowledge view |
+| US-15 | Administrator | Create, update, list, and delete approved knowledge. | Done | Knowledge CRUD API/UI |
+| US-16 | Administrator | Upload a text/PDF document for RAG ingestion. | Validation | Upload API/UI; final RAG evidence gate |
+| US-17 | Administrator | Manage prototype users and roles. | Done | User endpoints/Admin UI |
+| US-18 | Administrator | Review feedback statistics. | Done | `/feedback/stats`, Admin UI |
+| US-19 | Administrator | Review dashboard counts and telemetry. | Done | Dashboard/telemetry endpoints |
+| US-20 | Administrator | Review audit history. | Done | `/audit/logs`, Admin UI |
+| US-21 | Administrator | View/update demonstration AI settings. | Done | Settings endpoints/Admin UI |
+| US-22 | System | Persist knowledge, history, feedback, users, tickets, and settings. | Validation | SQLAlchemy models; final persistence UAT |
+| US-23 | System | Fall back safely when an adequate grounded answer is unavailable. | Done | `/search` fallback/no-match logic |
+| US-24 | System | Expose health and interactive API documentation. | Done | `/health`, `/docs` |
+| US-25 | Developer | Validate the application through automated API, component, browser, and build checks. | Validation | Pytest, Vitest, Playwright, CI |
+| US-26 | Grader | Access deployed software, repository documentation, task evidence, and test evidence. | Validation | README links, GitHub Project, CI |
 
-| Backlog ID | Feature | Priority | Status |
-|---|---|---|---|
-| PB-001 | User Registration and Login | High | Partial |
-| PB-002 | User Authentication and Authorization | High | Partial |
-| PB-003 | Customer Portal | High | Implemented |
-| PB-004 | Employee Portal | High | Implemented |
-| PB-005 | Document Upload | High | Partial |
-| PB-006 | Document Categorization | High | Partial |
-| PB-007 | Document Search | High | Implemented |
-| PB-008 | PDF Text Extraction | High | Pending |
-| PB-009 | Knowledge Base Management | High | Implemented |
-| PB-010 | Vector Database Integration | High | Partial |
-| PB-011 | Embedding Generation | High | Partial |
-| PB-012 | Question and Answer Interface | High | Implemented |
-| PB-013 | RAG Retrieval Engine | High | Partial |
-| PB-014 | Source Citations | High | Partial |
-| PB-015 | Confidence Score Display | Medium | Implemented |
-| PB-016 | Troubleshooting Recommendations | High | Implemented |
-| PB-017 | Escalation Guidance | Medium | In Progress |
-| PB-018 | Chat History | Medium | Implemented |
-| PB-019 | Search History | Medium | Partial |
-| PB-020 | Feedback Collection | Medium | Partial |
-| PB-021 | Analytics Dashboard | Medium | Partial |
-| PB-022 | User Management | Medium | Partial |
-| PB-023 | Role Management | Medium | Partial |
-| PB-024 | Performance Monitoring | Medium | Partial |
-| PB-025 | Report Export | Low | Pending |
-| PB-026 | Frequently Asked Questions | Medium | Implemented |
-| PB-027 | Knowledge Gap Identification | Low | Pending |
-| PB-028 | System Administration Dashboard | Medium | Implemented |
-| PB-029 | Deployment Environment | High | Pending |
-| PB-030 | CI/CD Pipeline | Medium | Pending |
+## Product backlog
 
-## Backlog Priorities for Final Completion
+| ID | Deliverable | Priority | Status | Evidence/exit condition |
+|---|---|---|---|---|
+| PB-01 | Full-stack repository and role portals | Must | Done | Frontend/backend source present |
+| PB-02 | Approved knowledge management | Must | Done | CRUD API and UI |
+| PB-03 | Enu question/answer and fallback | Must | Done | Customer workflow |
+| PB-04 | RAG ingestion and retrieval | Must | Validation | Repeatable PDF query with source/page |
+| PB-05 | Persistent ticket workflow | Must | Validation | Cross-portal refresh UAT |
+| PB-06 | Service Desk escalation | Must | Done | API and UI implementation |
+| PB-07 | Engineering diagnostics/resolution | Must | Done | API and UI implementation |
+| PB-08 | Feedback and operational analytics | Should | Done | Feedback/stats/telemetry endpoints |
+| PB-09 | Admin management and audit views | Should | Done | Admin UI/endpoints |
+| PB-10 | Public frontend/backend deployment | Must | Validation | Links open in signed-out browser |
+| PB-11 | Automated tests and CI | Must | Validation | All GitHub Actions jobs green |
+| PB-12 | Architecture/design documentation | Must | Done locally | README, architecture, design doc |
+| PB-13 | Detailed testing evidence | Must | Validation | CI plus completed UAT matrix |
+| PB-14 | Agile board synchronized with scope | Must | To Do | All committed items Done/Validation |
+| PB-15 | Secret-safe configuration template | Must | Done locally | `.env.example`, `.gitignore` |
+| PB-16 | Clean static-analysis gate | Should | To Do | `npm run lint` returns zero |
 
-### Priority A — Must complete before final demonstration
-- PB-017 Escalation Guidance / ticket escalation persistence
-- PB-029 Deployment Environment
-- PB-030 CI/CD Pipeline
-- End-to-end Service Desk → Site Engineer resolution workflow
-- Testing evidence for critical user stories
+## Future enhancement backlog
 
-### Priority B — Strengthen the 5/5 submission
-- PB-014 Source Citations
-- PB-020 Feedback Collection persistence
-- PB-021 Analytics Dashboard with live metrics
-- PB-024 Performance Monitoring
-- PB-008 robust PDF text extraction and ingestion validation
+The following ideas are not presented as incomplete committed Capstone requirements:
 
-### Priority C — Optional stretch improvements
-- PB-025 Report Export
-- PB-027 Knowledge Gap Identification
-- Expanded network diagrams / field-engineer content
+| ID | Future enhancement | Reason deferred |
+|---|---|---|
+| F-01 | Customer registration and production authentication | Requires hashing, tokens, authorization, recovery, and privacy design |
+| F-02 | Amharic/local-language answers | Requires curated multilingual knowledge and evaluation |
+| F-03 | Real telecom network/API integration | Requires provider authorization, secure connectivity, and real operational data |
+| F-04 | SMS/email notifications | Requires external communication services and consent controls |
+| F-05 | PostgreSQL and managed vector storage | Appropriate for production scale, beyond prototype hosting scope |
+| F-06 | Predictive incident classification | Requires labeled historical incident data and ML evaluation |
+| F-07 | Exportable management reports | Useful enhancement after core operational workflow |
+| F-08 | Advanced monitoring and alerting | Requires production observability infrastructure |
 
-## Traceability Note
+## Traceability matrix
 
-The backlog and user stories should be represented on the online agile task board. Each task should be moved through a simple workflow such as **Backlog → To Do → In Progress → Done**, with completed items linked to commits or screenshots where practical.
+| Capstone evidence area | Stories/backlog | Repository evidence |
+|---|---|---|
+| Developed system and repository | US-01 to US-24, PB-01 to PB-09 | `frontend/`, `backend/` |
+| Deployment | US-24/26, PB-10 | README project links |
+| Agile methodology and task board | US-26, PB-14 | This file, sprint document, GitHub Project |
+| Design and architecture | PB-12 | `README.md`, `ARCHITECTURE.md`, design/testing document |
+| Testing | US-25, PB-11/13/16 | `backend/tests`, `frontend/src/test`, `frontend/e2e`, CI, `TESTING.md` |
+| CI/CD tools | US-25, PB-11 | `.github/workflows/ci.yml` |
+| Above-and-beyond initiative | US-03 to US-23 | RAG, four roles, tickets, diagnostics, analytics, audit, deployment |
+
+## Board synchronization checklist
+
+Before submission:
+
+1. Create or update a GitHub Project item for every PB-01 to PB-16 item.
+2. Move PB-01 to PB-09, PB-12, and PB-15 to Done only after pushing these local updates.
+3. Keep PB-04, PB-05, PB-10, PB-11, and PB-13 in Validation until evidence is attached.
+4. Keep PB-14 and PB-16 in To Do until completed.
+5. Put F-01 to F-08 in a clearly labeled Future Enhancements group, not the active sprint.
+6. Add the exact public board URL to the README.
+7. Confirm the board is visible while signed out.
+
+If the advisor approved a different committed scope, update both this file and the board so they match that approval exactly.
