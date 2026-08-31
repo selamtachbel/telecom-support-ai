@@ -16,7 +16,7 @@ test("customer portal loads successfully", async ({ page }) => {
   ).toBeVisible();
 });
 test("user can ask Enu a telecom question", async ({ page }) => {
-  await page.route("http://127.0.0.1:8000/search**", async (route) => {
+ await page.route("**/search**", async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
