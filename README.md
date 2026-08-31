@@ -27,7 +27,7 @@ https://telecom-support-ai-api.onrender.com/docs
 ### Project Evidence
 
 * [GitHub Actions CI/CD](https://github.com/selamtachbel/telecom-support-ai/actions)
-* [GitHub Project Board](https://github.com/selamtachbel/telecom-support-ai/projects)
+* [GitHub Project Board](https://github.com/selamtachbel/projects/1)
 * [Design and Testing Document](docs/Design_and_Testing_Document.docx)
 * [Sprint Documentation](docs/Sprint_Documentation.md)
 * [User Stories and Product Backlog](docs/User_Stories_and_Backlog.md)
