@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../apiConfig";
 import "./KnowledgeBase.css";
 
 function KnowledgeBase() {
@@ -23,8 +24,8 @@ function KnowledgeBase() {
       setError("");
 
       const response = await axios.get(
-        "http://127.0.0.1:8000/knowledge"
-      );
+       `${API_BASE_URL}/knowledge`
+);
 
       setKnowledge(response.data);
     } catch (requestError) {
@@ -92,18 +93,18 @@ function KnowledgeBase() {
 
       if (editingId !== null) {
         await axios.put(
-          `http://127.0.0.1:8000/knowledge/${editingId}`,
-          payload
-        );
+          `${API_BASE_URL}/knowledge/${editingId}`,
+         payload
+);
 
         setMessage(
           "Knowledge article updated successfully."
         );
       } else {
         await axios.post(
-          "http://127.0.0.1:8000/knowledge",
-          payload
-        );
+          `${API_BASE_URL}/knowledge`,
+        payload
+);
 
         setMessage(
           "Knowledge article added successfully."
@@ -163,8 +164,8 @@ function KnowledgeBase() {
       setMessage("");
 
       await axios.delete(
-        `http://127.0.0.1:8000/knowledge/${itemId}`
-      );
+        `${API_BASE_URL}/knowledge/${itemId}`
+);
 
       setMessage(
         "Knowledge article deleted successfully."

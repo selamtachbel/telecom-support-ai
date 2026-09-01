@@ -48,6 +48,7 @@ class User(Base):
 
 class Ticket(Base):
     __tablename__ = "tickets"
+
     id = Column(Integer, primary_key=True, index=True)
     customer_name = Column(String(100), nullable=False)
     issue = Column(Text, nullable=False)
@@ -55,6 +56,7 @@ class Ticket(Base):
     priority = Column(String(50), nullable=False)
     status = Column(String(50), nullable=False, default="Open")
     assigned_engineer = Column(String(100), default="")
+    escalation_reason = Column(Text, default="")
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
 class SystemLog(Base):

@@ -3,18 +3,22 @@ from database import Base, engine
 import models
 
 
-# Create tables if they do not exist
+# Create tables if they do not already exist
 Base.metadata.create_all(bind=engine)
+
 
 with engine.begin() as connection:
     inspector = inspect(connection)
 
-    columns = {
+    # -------------------------
+    # Knowledge Base migration
+    # -------------------------
+    knowledge_columns = {
         column["name"]
         for column in inspector.get_columns("knowledge_base")
     }
 
-    if "created_at" not in columns:
+    if "created_at" not in knowledge_columns:
         connection.execute(
             text(
                 "ALTER TABLE knowledge_base "
@@ -23,7 +27,7 @@ with engine.begin() as connection:
         )
         print("Added created_at column.")
 
-    if "updated_at" not in columns:
+    if "updated_at" not in knowledge_columns:
         connection.execute(
             text(
                 "ALTER TABLE knowledge_base "
@@ -32,7 +36,6 @@ with engine.begin() as connection:
         )
         print("Added updated_at column.")
 
-    # Give any existing records timestamps
     connection.execute(
         text(
             "UPDATE knowledge_base "
@@ -48,5 +51,32 @@ with engine.begin() as connection:
             "WHERE updated_at IS NULL"
         )
     )
+
+    # -------------------------
+    # Ticket migration
+    # -------------------------
+    ticket_columns = {
+        column["name"]
+        for column in inspector.get_columns("tickets")
+    }
+
+    if "assigned_engineer" not in ticket_columns:
+        connection.execute(
+            text(
+                "ALTER TABLE tickets "
+                "ADD COLUMN assigned_engineer VARCHAR(100) DEFAULT ''"
+            )
+        )
+        print("Added assigned_engineer column.")
+
+    if "escalation_reason" not in ticket_columns:
+        connection.execute(
+            text(
+                "ALTER TABLE tickets "
+                "ADD COLUMN escalation_reason TEXT DEFAULT ''"
+            )
+        )
+        print("Added escalation_reason column.")
+
 
 print("Database migration completed successfully.")

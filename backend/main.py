@@ -693,14 +693,26 @@ def update_ticket(
     db: Session = Depends(get_db)
 ):
     ticket = db.query(Ticket).filter(Ticket.id == ticket_id).first()
+
     if not ticket:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Ticket not found."
         )
-    for field, value in data.model_dump(exclude_unset=True).items():
-        if hasattr(ticket, field) and value is not None:
-            setattr(ticket, field, value)
+
+    update_data = data.model_dump(exclude_unset=True)
+
+    field_mapping = {
+        "assignedTo": "assigned_engineer",
+        "escalationReason": "escalation_reason",
+    }
+
+    for field, value in update_data.items():
+        database_field = field_mapping.get(field, field)
+
+        if hasattr(ticket, database_field) and value is not None:
+            setattr(ticket, database_field, value)
+
     db.commit()
     db.refresh(ticket)
     return ticket
