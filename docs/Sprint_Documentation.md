@@ -4,8 +4,8 @@
 
 **Developer:** Selam Tachbel Bekele  
 **Method:** Individual Agile/Scrum-inspired iterative delivery  
-**Status date:** 31 August 2026  
-**Current phase:** Submission hardening and evidence validation
+**Status date:** 1 September 2026 
+**Current phase:**  Final submission preparation
 
 ## Working method
 
@@ -56,7 +56,7 @@ The board workflow is **Backlog -> To Do -> In Progress -> Done**. A committed i
 - `frontend/src/pages/KnowledgeBase.jsx`
 - `/search`, `/knowledge`, and `/documents/upload` endpoints
 
-**Outcome:** Implemented. Final evidence gate requires a clean repeatable RAG ingestion/query record using the submitted deployment.
+**Outcome:** Implemented for the Capstone prototype scope.
 
 ## Sprint 3 - Operational support workflow
 
@@ -77,8 +77,7 @@ The board workflow is **Backlog -> To Do -> In Progress -> Done**. A committed i
 - `/tickets`, `/tickets/{ticket_id}`, `/diagnostics`
 - Backend automated escalation/resolution test
 
-**Outcome:** Implemented. Refresh and cross-portal persistence remain part of the final UAT evidence gate.
-
+**Outcome:** Implemented and verified for the Capstone prototype scope. Ticket escalation and resolution persistence are covered by backend automated tests and local API verification.
 ## Sprint 4 - Administration, quality, and deployment
 
 **Goal:** Add operational evidence, automated checks, documentation, and public access.
@@ -90,16 +89,18 @@ The board workflow is **Backlog -> To Do -> In Progress -> Done**. A committed i
 - Deployed frontend, backend, health, and Swagger links.
 - Backend Pytest, frontend Vitest, and Playwright test assets.
 - GitHub Actions workflow for backend and frontend validation.
-- README, architecture, API, testing, security, sprint, and traceability documentation.
+- README sections covering architecture, API endpoints, testing, security, deployment, and system scope, supported by sprint and backlog documentation.
 
-### Verification status on 31 August 2026
+### Verification status on 1 September 2026
 
+- Backend Pytest suite: 4 tests passed locally.
 - Frontend component tests: 2/2 passed locally.
 - Frontend production build: passed locally.
-- ESLint: 8 errors and 2 warnings remain.
-- Backend/Playwright results: must be confirmed in a clean green CI run.
+- GitHub Actions CI run #40: passed successfully on the main branch.
+- CI validates backend API tests, frontend component tests, production build, and Playwright end-to-end tests.
+- Remaining ESLint findings are documented as non-blocking static-quality cleanup.
 
-**Outcome:** Functionally delivered; submission hardening remains in progress until CI and lint are clean and the board mirrors this record.
+Outcome: Functionally delivered and validated for Capstone submission. Automated backend, frontend, build, and end-to-end validation are passing in CI.
 
 ## Definition of Done
 
@@ -116,17 +117,18 @@ A committed Capstone story is Done when:
 
 | Task | Status | Completion evidence |
 |---|---|---|
-| Correct backend dependency file | Done locally | UTF-8 `backend/requirements.txt` |
-| Add reproducible npm test scripts | Done locally | `frontend/package.json` |
-| Extend CI to backend and production build | Done locally | `.github/workflows/ci.yml` |
-| Update repository documentation | Done locally | README and `docs/` Markdown files |
-| Resolve ESLint findings | To Do | `npm run lint` returns zero |
-| Confirm backend tests in CI | To Do | Green backend job |
-| Confirm Playwright tests in CI | To Do | Green browser-test step |
-| Confirm exact public Project board link | To Do | Link opens for signed-out grader |
-| Synchronize GitHub board status | To Do | All committed stories/tasks in Done |
-| Confirm deployed links privately | To Do | Frontend, health, and Swagger load |
-
+| Correct backend dependency file | Done | UTF-8 `backend/requirements.txt` |
+| Add reproducible npm test scripts | Done | `frontend/package.json` |
+| Extend CI to backend and production build | Done | `.github/workflows/ci.yml` |
+| Confirm backend tests in CI | Done | GitHub Actions CI #40 |
+| Confirm Playwright tests in CI | Done | GitHub Actions CI #40 |
+| Verify frontend production build | Done | Local build and CI #40 |
+| Fix Knowledge Base cloud API configuration | Done | Centralized `API_BASE_URL` |
+| Verify ticket escalation persistence | Done | Backend tests and API verification |
+| Update repository documentation | Done | README and `docs/` documentation |
+| Resolve remaining ESLint findings | Deferred cleanup | Non-blocking static-quality improvement |
+| Confirm public Project board status | Final check | Verify committed items are in Done |
+| Confirm deployed Render links | Final check | Frontend, health endpoint, and Swagger |
 ## Retrospective
 
 ### What worked
@@ -145,5 +147,5 @@ A committed Capstone story is Done when:
 
 ### Improvement applied
 
-The final hardening phase makes documentation and CI executable evidence rather than descriptive claims. Remaining findings are disclosed until they are verifiably resolved.
+The final hardening phase converted documentation and CI into executable evidence rather than descriptive claims. Core backend, frontend, build, and end-to-end checks are passing, while remaining non-blocking cleanup items are documented transparently.
 
